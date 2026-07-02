@@ -1329,6 +1329,7 @@
   "components": {
     "schemas": {
       "SupplierSummary": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -1443,6 +1444,7 @@
         "type": "object"
       },
       "AddressInput": {
+        "additionalProperties": false,
         "properties": {
           "line_1": {
             "anyOf": [
@@ -1527,6 +1529,7 @@
         "type": "object"
       },
       "BankAccountInput": {
+        "additionalProperties": false,
         "properties": {
           "account_number": {
             "maxLength": 255,
@@ -1554,6 +1557,7 @@
         "type": "object"
       },
       "CreateSupplierInput": {
+        "additionalProperties": false,
         "properties": {
           "supplier_number": {
             "maxLength": 255,
@@ -1569,6 +1573,12 @@
           },
           "country": {
             "title": "Country",
+            "type": "string"
+          },
+          "currency": {
+            "maxLength": 10,
+            "minLength": 1,
+            "title": "Currency",
             "type": "string"
           },
           "full_formal_name": {
@@ -1667,6 +1677,32 @@
             "default": null,
             "title": "Legal Registration Identifier"
           },
+          "additional_legal_info": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Additional Legal Info"
+          },
+          "supplier_alt_id": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Supplier Alt Id"
+          },
           "status": {
             "anyOf": [
               {
@@ -1710,12 +1746,14 @@
           "supplier_number",
           "name",
           "country",
+          "currency",
           "tax_rate"
         ],
         "title": "CreateSupplierInput",
         "type": "object"
       },
       "Address": {
+        "additionalProperties": false,
         "properties": {
           "line_1": {
             "anyOf": [
@@ -1794,6 +1832,7 @@
         "type": "object"
       },
       "BankAccount": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -1829,6 +1868,7 @@
         "type": "object"
       },
       "Contact": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -1883,6 +1923,7 @@
         "type": "object"
       },
       "DefaultCodingLine": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -2049,6 +2090,7 @@
         "type": "object"
       },
       "Peppol": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -2127,6 +2169,7 @@
         "type": "object"
       },
       "SupplierDetail": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -2359,6 +2402,7 @@
         "type": "object"
       },
       "UpdateSupplierInput": {
+        "additionalProperties": false,
         "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\nBank accounts are synced as a full replace when provided (frontend sends complete list).\nContacts use dedicated sub-resource endpoints (/contacts).\nDefault codings use dedicated sub-resource endpoints (/default-codings).\nAddress (1:1) and legal_registration_identifier are updated directly in this endpoint.",
         "properties": {
           "name": {
@@ -2410,7 +2454,7 @@
                 "type": "null"
               }
             ],
-            "default": "1",
+            "default": null,
             "title": "Status"
           },
           "tax_code": {
@@ -2573,6 +2617,7 @@
         "type": "object"
       },
       "ContactInput": {
+        "additionalProperties": false,
         "properties": {
           "email": {
             "maxLength": 255,
@@ -2616,6 +2661,7 @@
         "type": "object"
       },
       "CreateContactsInput": {
+        "additionalProperties": false,
         "description": "Bulk-create payload: one or more supplier contacts in a single request.",
         "properties": {
           "contacts": {
@@ -2635,6 +2681,7 @@
         "type": "object"
       },
       "UpdateContactInput": {
+        "additionalProperties": false,
         "description": "Partial update for a supplier contact sub-resource.",
         "properties": {
           "name": {
@@ -2684,6 +2731,7 @@
         "type": "object"
       },
       "GLCode": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -2774,6 +2822,7 @@
         "type": "object"
       },
       "CreateGlCodeInput": {
+        "additionalProperties": false,
         "properties": {
           "code": {
             "maxLength": 100,
@@ -2841,6 +2890,7 @@
         "type": "object"
       },
       "GLCodeDetail": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -2943,6 +2993,7 @@
         "type": "object"
       },
       "UpdateGlCodeInput": {
+        "additionalProperties": false,
         "properties": {
           "code": {
             "anyOf": [
@@ -3016,6 +3067,7 @@
         "type": "object"
       },
       "GLSegment": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -3123,6 +3175,7 @@
         "type": "object"
       },
       "CreateGlSegmentInput": {
+        "additionalProperties": false,
         "properties": {
           "name": {
             "maxLength": 255,
@@ -3206,6 +3259,7 @@
         "type": "object"
       },
       "GLSegmentDetail": {
+        "additionalProperties": false,
         "properties": {
           "id": {
             "anyOf": [
@@ -3325,6 +3379,7 @@
         "type": "object"
       },
       "UpdateGlSegmentInput": {
+        "additionalProperties": false,
         "properties": {
           "name": {
             "anyOf": [
