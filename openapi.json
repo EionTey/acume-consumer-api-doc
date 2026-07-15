@@ -15,6 +15,11 @@
       "description": "Production"
     }
   ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
   "paths": {
     "/v1/suppliers": {
       "get": {
@@ -69,17 +74,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, e.g. limit out of range or a malformed cursor (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/InvalidQueryParameter"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -120,14 +188,6 @@
               "format": "date-time"
             },
             "description": "Only rows updated at or after this ISO-8601 timestamp."
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Free-text search on supplier name/number."
           }
         ]
       },
@@ -162,17 +222,116 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A unique field already exists (code: resource_already_exists), or an Idempotency-Key request is still being processed (code: idempotency_in_progress).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_already_exists": {
+                    "$ref": "#/components/examples/ResourceAlreadyExists"
+                  },
+                  "idempotency_in_progress": {
+                    "$ref": "#/components/examples/IdempotencyInProgress"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Idempotency-Key was already used with a different request payload (code: idempotency_key_reused).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_key_reused": {
+                    "$ref": "#/components/examples/IdempotencyKeyReused"
+                  }
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -219,17 +378,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/SupplierNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -274,17 +496,101 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error), or a referenced resource doesn't exist (code: resource_missing).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  },
+                  "resource_missing": {
+                    "$ref": "#/components/examples/ResourceMissing"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/SupplierNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -317,17 +623,80 @@
           "200": {
             "description": "Successful response"
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/SupplierNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -396,17 +765,95 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, e.g. limit out of range or a malformed cursor (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/InvalidQueryParameter"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -417,6 +864,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size (1-200, default 50)."
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque pagination cursor from the previous response."
           }
         ]
       },
@@ -473,17 +936,131 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A unique field already exists (code: resource_already_exists), or an Idempotency-Key request is still being processed (code: idempotency_in_progress).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_already_exists": {
+                    "$ref": "#/components/examples/ResourceAlreadyExists"
+                  },
+                  "idempotency_in_progress": {
+                    "$ref": "#/components/examples/IdempotencyInProgress"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Idempotency-Key was already used with a different request payload (code: idempotency_key_reused).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_key_reused": {
+                    "$ref": "#/components/examples/IdempotencyKeyReused"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -541,17 +1118,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -605,17 +1245,116 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error), or the body contained no recognized fields to update (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  },
+                  "invalid_request": {
+                    "$ref": "#/components/examples/NoValidFieldsToUpdate"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Renaming to an email that's already in use for this supplier (code: resource_already_exists).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_already_exists": {
+                    "$ref": "#/components/examples/ResourceAlreadyExists"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -657,17 +1396,80 @@
           "200": {
             "description": "Successful response"
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -743,17 +1545,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, e.g. limit out of range or a malformed cursor (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/InvalidQueryParameter"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -828,17 +1693,116 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A unique field already exists (code: resource_already_exists), or an Idempotency-Key request is still being processed (code: idempotency_in_progress).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_already_exists": {
+                    "$ref": "#/components/examples/ResourceAlreadyExists"
+                  },
+                  "idempotency_in_progress": {
+                    "$ref": "#/components/examples/IdempotencyInProgress"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Idempotency-Key was already used with a different request payload (code: idempotency_key_reused).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_key_reused": {
+                    "$ref": "#/components/examples/IdempotencyKeyReused"
+                  }
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -885,17 +1849,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlCodeNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -940,17 +1967,104 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error), or the body contained no recognized fields to update (code: invalid_request). Renaming `code` to an already-used value is also a 400 here (code: invalid_request), not a 409.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  },
+                  "invalid_request": {
+                    "$ref": "#/components/examples/NoValidFieldsToUpdate"
+                  },
+                  "gl_code_duplicate": {
+                    "$ref": "#/components/examples/GlCodeDuplicateOnUpdate"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlCodeNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -983,17 +2097,80 @@
           "200": {
             "description": "Successful response"
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlCodeNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -1061,17 +2238,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, e.g. limit out of range or a malformed cursor (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/InvalidQueryParameter"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -1103,6 +2343,15 @@
               ]
             },
             "description": "Filter by status."
+          },
+          {
+            "name": "updated_at[gte]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only rows updated at or after this ISO-8601 timestamp."
           },
           {
             "name": "level",
@@ -1145,17 +2394,116 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A unique field already exists (code: resource_already_exists), or an Idempotency-Key request is still being processed (code: idempotency_in_progress).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_already_exists": {
+                    "$ref": "#/components/examples/ResourceAlreadyExists"
+                  },
+                  "idempotency_in_progress": {
+                    "$ref": "#/components/examples/IdempotencyInProgress"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Idempotency-Key was already used with a different request payload (code: idempotency_key_reused).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_key_reused": {
+                    "$ref": "#/components/examples/IdempotencyKeyReused"
+                  }
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1202,17 +2550,80 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlSegmentNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -1257,17 +2668,101 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error), or the body contained no recognized fields to update (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  },
+                  "invalid_request": {
+                    "$ref": "#/components/examples/NoValidFieldsToUpdate"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlSegmentNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -1300,17 +2795,80 @@
           "200": {
             "description": "Successful response"
           },
-          "400": {
-            "description": "Bad request / validation error"
-          },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Resource not found"
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/GlSegmentNotFound"
+                  }
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -1324,10 +2882,210 @@
           }
         ]
       }
+    },
+    "/v1/auth/token": {
+      "post": {
+        "summary": "Exchange an api_key for a JWT",
+        "tags": [
+          "Auth"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "api_key missing from the request body (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/ApiKeyRequired"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "api_key does not match any client (code: invalid_api_key). NOTE: unlike every other endpoint's 401, this one IS the app's own Error envelope, since it's raised in application code (token_handler), not by an API Gateway authorizer -- this endpoint has no authorizer in front of it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_api_key": {
+                    "$ref": "#/components/examples/InvalidApiKey"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Canonical error envelope. Every non-2xx response is {\"error\": ...} with this shape.",
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "type",
+              "code",
+              "message",
+              "request_id",
+              "doc_url"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Broad Stripe-style category clients can branch on for coarse handling.",
+                "enum": [
+                  "invalid_request_error",
+                  "authentication_error",
+                  "permission_error",
+                  "rate_limit_error",
+                  "idempotency_error",
+                  "api_error"
+                ]
+              },
+              "code": {
+                "type": "string",
+                "description": "Stable machine-readable code for fine-grained branching.",
+                "enum": [
+                  "validation_error",
+                  "invalid_request",
+                  "resource_missing",
+                  "resource_not_found",
+                  "conflict",
+                  "resource_already_exists",
+                  "invalid_state",
+                  "unauthorized",
+                  "forbidden",
+                  "rate_limit_exceeded",
+                  "service_unavailable",
+                  "internal_error",
+                  "malformed_json",
+                  "idempotency_key_reused",
+                  "idempotency_in_progress",
+                  "invalid_api_key"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable summary of the error."
+              },
+              "field": {
+                "type": "string",
+                "description": "Present on single-field errors outside `details` (e.g. a 404/409/400 caused by exactly one bad input, like a duplicate `code` or an unknown `gl_code`). Points at the offending field without parsing `message`."
+              },
+              "details": {
+                "type": "array",
+                "description": "Present only when code=\"validation_error\": one entry per field violation.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "field",
+                    "reason",
+                    "message"
+                  ],
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "description": "Dotted path to the offending field, e.g. 'items.0.sku'."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Closed vocabulary -- see lambda_function.py::_PYDANTIC_REASON_MAP.",
+                      "enum": [
+                        "missing",
+                        "invalid_type",
+                        "invalid_format",
+                        "out_of_range",
+                        "invalid_enum_value",
+                        "unknown_field",
+                        "duplicate_value",
+                        "null_not_allowed",
+                        "invalid"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable, always starts with a capital letter."
+                    }
+                  }
+                }
+              },
+              "retry_after": {
+                "type": "integer",
+                "description": "Seconds to wait before retrying. Present on 429/503 only; also echoed in the Retry-After header."
+              },
+              "request_id": {
+                "type": "string",
+                "description": "Echoed in the x-request-id header. Include this when contacting support."
+              },
+              "doc_url": {
+                "type": "string",
+                "description": "Link to the docs page for this specific `code`."
+              }
+            }
+          }
+        }
+      },
+      "GatewayUnauthorizedError": {
+        "type": "object",
+        "description": "API Gateway's default Unauthorized response for a denied/erroring TOKEN Lambda authorizer (auth/lambda_function.py::authorizer_handler). Distinct from the app's Error schema -- the request never reaches the application.",
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Unauthorized"
+            ]
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
       "SupplierSummary": {
         "additionalProperties": false,
         "properties": {
@@ -1366,18 +3124,6 @@
             ],
             "default": null,
             "title": "Status"
-          },
-          "tax_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Tax Code"
           },
           "currency": {
             "anyOf": [
@@ -1450,6 +3196,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1463,6 +3210,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1476,6 +3224,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1489,6 +3238,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1502,6 +3252,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1515,6 +3266,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1572,12 +3324,13 @@
             "type": "string"
           },
           "country": {
+            "minLength": 1,
             "title": "Country",
             "type": "string"
           },
           "currency": {
-            "maxLength": 10,
-            "minLength": 1,
+            "description": "ISO 4217 3-letter alphabetic currency code (e.g. NZD, AUD, USD).",
+            "pattern": "^[A-Za-z]{3}$",
             "title": "Currency",
             "type": "string"
           },
@@ -1595,40 +3348,32 @@
             "default": null,
             "title": "Full Formal Name"
           },
-          "tax_code": {
-            "anyOf": [
-              {
-                "maxLength": 50,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Tax Code"
-          },
           "tax_category": {
-            "anyOf": [
-              {
-                "maxLength": 255,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
             "default": "S",
-            "title": "Tax Category"
+            "description": "Tax category code. Defaults to 'S' (standard).",
+            "enum": [
+              "C",
+              "E",
+              "G",
+              "O",
+              "S",
+              "Z"
+            ],
+            "title": "Tax Category",
+            "type": "string"
           },
           "tax_rate": {
+            "description": "Case-insensitive; '%' suffix optional for numeric values (e.g. '10' matches '10%').\n\nAllowed values by tax_category:\n\n| tax_category | Allowed tax_rate |\n|---|---|\n| S (Standard) | `15%`, `12%`, `10%` |\n| E (Exempt) | `No Tax` |\n| Z (Zero-rated) | `0%` |\n| C | `10%` |\n| G | `No Tax` |\n| O | `No Tax` |\n",
             "maxLength": 255,
+            "minLength": 1,
             "title": "Tax Rate",
             "type": "string"
           },
           "payment_terms": {
             "anyOf": [
               {
+                "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1642,6 +3387,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1654,20 +3400,10 @@
           "document_delivery_channel": {
             "anyOf": [
               {
-                "maxLength": 255,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "email",
-            "title": "Document Delivery Channel"
-          },
-          "legal_registration_identifier": {
-            "anyOf": [
-              {
-                "maxLength": 255,
+                "enum": [
+                  "email",
+                  "peppol"
+                ],
                 "type": "string"
               },
               {
@@ -1675,12 +3411,28 @@
               }
             ],
             "default": null,
+            "title": "Document Delivery Channel"
+          },
+          "legal_registration_identifier": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For AU/NZ suppliers: must be 10-15 digits. Dashes and spaces are accepted and stripped; stored and returned in digits-only form. For all other countries, any non-empty string is accepted.",
             "title": "Legal Registration Identifier"
           },
           "additional_legal_info": {
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1694,6 +3446,7 @@
             "anyOf": [
               {
                 "maxLength": 200,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -1750,7 +3503,137 @@
           "tax_rate"
         ],
         "title": "CreateSupplierInput",
-        "type": "object"
+        "type": "object",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "tax_category": {
+                  "const": "E"
+                }
+              },
+              "required": [
+                "tax_category"
+              ]
+            },
+            "then": {
+              "properties": {
+                "tax_rate": {
+                  "enum": [
+                    "No Tax"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "if": {
+                "properties": {
+                  "tax_category": {
+                    "const": "S"
+                  }
+                },
+                "required": [
+                  "tax_category"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "tax_rate": {
+                    "enum": [
+                      "15%",
+                      "12%",
+                      "10%"
+                    ]
+                  }
+                }
+              },
+              "else": {
+                "if": {
+                  "properties": {
+                    "tax_category": {
+                      "const": "Z"
+                    }
+                  },
+                  "required": [
+                    "tax_category"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "tax_rate": {
+                      "enum": [
+                        "0%"
+                      ]
+                    }
+                  }
+                },
+                "else": {
+                  "if": {
+                    "properties": {
+                      "tax_category": {
+                        "const": "G"
+                      }
+                    },
+                    "required": [
+                      "tax_category"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "tax_rate": {
+                        "enum": [
+                          "No Tax"
+                        ]
+                      }
+                    }
+                  },
+                  "else": {
+                    "if": {
+                      "properties": {
+                        "tax_category": {
+                          "const": "O"
+                        }
+                      },
+                      "required": [
+                        "tax_category"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "tax_rate": {
+                          "enum": [
+                            "No Tax"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "if": {
+                        "properties": {
+                          "tax_category": {
+                            "const": "C"
+                          }
+                        },
+                        "required": [
+                          "tax_category"
+                        ]
+                      },
+                      "then": {
+                        "properties": {
+                          "tax_rate": {
+                            "enum": [
+                              "10%"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
       "Address": {
         "additionalProperties": false,
@@ -2207,18 +4090,6 @@
             "default": null,
             "title": "Status"
           },
-          "tax_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Tax Code"
-          },
           "currency": {
             "anyOf": [
               {
@@ -2339,6 +4210,30 @@
             "default": null,
             "title": "Nzbn"
           },
+          "additional_legal_info": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Additional Legal Info"
+          },
+          "supplier_alt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Supplier Alt Id"
+          },
           "address": {
             "$ref": "#/components/schemas/Address",
             "default": {
@@ -2436,6 +4331,7 @@
           "country": {
             "anyOf": [
               {
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2457,23 +4353,17 @@
             "default": null,
             "title": "Status"
           },
-          "tax_code": {
-            "anyOf": [
-              {
-                "maxLength": 50,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Tax Code"
-          },
           "tax_category": {
             "anyOf": [
               {
-                "maxLength": 255,
+                "enum": [
+                  "C",
+                  "E",
+                  "G",
+                  "O",
+                  "S",
+                  "Z"
+                ],
                 "type": "string"
               },
               {
@@ -2481,12 +4371,14 @@
               }
             ],
             "default": null,
+            "description": "Tax category code.",
             "title": "Tax Category"
           },
           "tax_rate": {
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2494,12 +4386,12 @@
               }
             ],
             "default": null,
+            "description": "Case-insensitive; '%' suffix optional for numeric values (e.g. '10' matches '10%').\n\nAllowed values by tax_category:\n\n| tax_category | Allowed tax_rate |\n|---|---|\n| S (Standard) | `15%`, `12%`, `10%` |\n| E (Exempt) | `No Tax` |\n| Z (Zero-rated) | `0%` |\n| C | `10%` |\n| G | `No Tax` |\n| O | `No Tax` |\n",
             "title": "Tax Rate"
           },
           "currency": {
             "anyOf": [
               {
-                "maxLength": 10,
                 "type": "string"
               },
               {
@@ -2507,11 +4399,15 @@
               }
             ],
             "default": null,
+            "description": "ISO 4217 3-letter alphabetic currency code (e.g. NZD, AUD, USD).",
+            "pattern": "^[A-Za-z]{3}$",
             "title": "Currency"
           },
           "payment_terms": {
             "anyOf": [
               {
+                "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2525,6 +4421,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2534,36 +4431,13 @@
             "default": null,
             "title": "Tax Reg No"
           },
-          "additional_legal_info": {
-            "anyOf": [
-              {
-                "maxLength": 255,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Additional Legal Info"
-          },
-          "supplier_alt_id": {
-            "anyOf": [
-              {
-                "maxLength": 200,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Supplier Alt Id"
-          },
           "document_delivery_channel": {
             "anyOf": [
               {
-                "maxLength": 255,
+                "enum": [
+                  "email",
+                  "peppol"
+                ],
                 "type": "string"
               },
               {
@@ -2577,6 +4451,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2584,7 +4459,36 @@
               }
             ],
             "default": null,
+            "description": "For AU/NZ suppliers: must be 10-15 digits. Dashes and spaces are accepted and stripped; stored and returned in digits-only form. For all other countries, any non-empty string is accepted.",
             "title": "Legal Registration Identifier"
+          },
+          "additional_legal_info": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Additional Legal Info"
+          },
+          "supplier_alt_id": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Supplier Alt Id"
           },
           "address": {
             "anyOf": [
@@ -2614,7 +4518,137 @@
           }
         },
         "title": "UpdateSupplierInput",
-        "type": "object"
+        "type": "object",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "tax_category": {
+                  "const": "E"
+                }
+              },
+              "required": [
+                "tax_category"
+              ]
+            },
+            "then": {
+              "properties": {
+                "tax_rate": {
+                  "enum": [
+                    "No Tax"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "if": {
+                "properties": {
+                  "tax_category": {
+                    "const": "S"
+                  }
+                },
+                "required": [
+                  "tax_category"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "tax_rate": {
+                    "enum": [
+                      "15%",
+                      "12%",
+                      "10%"
+                    ]
+                  }
+                }
+              },
+              "else": {
+                "if": {
+                  "properties": {
+                    "tax_category": {
+                      "const": "Z"
+                    }
+                  },
+                  "required": [
+                    "tax_category"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "tax_rate": {
+                      "enum": [
+                        "0%"
+                      ]
+                    }
+                  }
+                },
+                "else": {
+                  "if": {
+                    "properties": {
+                      "tax_category": {
+                        "const": "G"
+                      }
+                    },
+                    "required": [
+                      "tax_category"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "tax_rate": {
+                        "enum": [
+                          "No Tax"
+                        ]
+                      }
+                    }
+                  },
+                  "else": {
+                    "if": {
+                      "properties": {
+                        "tax_category": {
+                          "const": "O"
+                        }
+                      },
+                      "required": [
+                        "tax_category"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "tax_rate": {
+                          "enum": [
+                            "No Tax"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "if": {
+                        "properties": {
+                          "tax_category": {
+                            "const": "C"
+                          }
+                        },
+                        "required": [
+                          "tax_category"
+                        ]
+                      },
+                      "then": {
+                        "properties": {
+                          "tax_rate": {
+                            "enum": [
+                              "10%"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
       "ContactInput": {
         "additionalProperties": false,
@@ -2846,6 +4880,7 @@
             "anyOf": [
               {
                 "maxLength": 100,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2859,6 +4894,7 @@
             "anyOf": [
               {
                 "maxLength": 200,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -2871,6 +4907,10 @@
           "status": {
             "anyOf": [
               {
+                "enum": [
+                  "0",
+                  "1"
+                ],
                 "type": "string"
               },
               {
@@ -3027,6 +5067,7 @@
             "anyOf": [
               {
                 "maxLength": 200,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3053,13 +5094,17 @@
           "status": {
             "anyOf": [
               {
+                "enum": [
+                  "0",
+                  "1"
+                ],
                 "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "default": null,
+            "default": "1",
             "title": "Status"
           }
         },
@@ -3184,6 +5229,15 @@
             "type": "string"
           },
           "level": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
             "title": "Level",
             "type": "integer"
           },
@@ -3191,6 +5245,7 @@
             "anyOf": [
               {
                 "maxLength": 36,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3204,6 +5259,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3217,6 +5273,7 @@
             "anyOf": [
               {
                 "maxLength": 50,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3241,6 +5298,10 @@
           "status": {
             "anyOf": [
               {
+                "enum": [
+                  "0",
+                  "1"
+                ],
                 "type": "string"
               },
               {
@@ -3399,6 +5460,7 @@
             "anyOf": [
               {
                 "maxLength": 255,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3412,6 +5474,7 @@
             "anyOf": [
               {
                 "maxLength": 50,
+                "minLength": 1,
                 "type": "string"
               },
               {
@@ -3436,18 +5499,307 @@
           "status": {
             "anyOf": [
               {
+                "enum": [
+                  "0",
+                  "1"
+                ],
                 "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "default": null,
+            "default": "1",
             "title": "Status"
           }
         },
         "title": "UpdateGlSegmentInput",
         "type": "object"
+      },
+      "AuthTokenRequest": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "description": "Client's static API key, issued out-of-band."
+          }
+        },
+        "required": [
+          "api_key"
+        ]
+      },
+      "AuthTokenResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "HS256-signed JWT. Pass as `Authorization: Bearer <access_token>` on all other endpoints."
+          },
+          "token_type": {
+            "type": "string",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Seconds until the token expires."
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in"
+        ]
+      }
+    },
+    "examples": {
+      "GatewayUnauthorized": {
+        "summary": "Missing or invalid bearer token",
+        "value": {
+          "message": "Unauthorized"
+        }
+      },
+      "ApiKeyRequired": {
+        "summary": "api_key missing from the /v1/auth/token request body",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "message": "api_key is required.",
+            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543",
+            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+          }
+        }
+      },
+      "InvalidApiKey": {
+        "summary": "api_key does not match any client",
+        "value": {
+          "error": {
+            "type": "authentication_error",
+            "code": "invalid_api_key",
+            "message": "The provided api_key is invalid.",
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
+            "doc_url": "https://docs.acume.dev/errors#invalid_api_key"
+          }
+        }
+      },
+      "RateLimitExceeded": {
+        "summary": "Too many requests",
+        "value": {
+          "error": {
+            "type": "rate_limit_error",
+            "code": "rate_limit_exceeded",
+            "message": "Too many requests. Please retry after the given interval.",
+            "retry_after": 30,
+            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4",
+            "doc_url": "https://docs.acume.dev/errors#rate_limit_exceeded"
+          }
+        }
+      },
+      "InternalError": {
+        "summary": "Unexpected server error",
+        "value": {
+          "error": {
+            "type": "api_error",
+            "code": "internal_error",
+            "message": "An unexpected error occurred.",
+            "request_id": "req_9bf31c7ff062936a96d3c8bd1f8f2ff3",
+            "doc_url": "https://docs.acume.dev/errors#internal_error"
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "summary": "Service temporarily unavailable",
+        "value": {
+          "error": {
+            "type": "api_error",
+            "code": "service_unavailable",
+            "message": "The service is temporarily unavailable. Please retry.",
+            "retry_after": 30,
+            "request_id": "req_c9f0f895fb98ab9159f51fd0297e236d",
+            "doc_url": "https://docs.acume.dev/errors#service_unavailable"
+          }
+        }
+      },
+      "MalformedJson": {
+        "summary": "Request body is not valid JSON",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "malformed_json",
+            "message": "Request body is not valid JSON: Expecting value at line 1, column 10.",
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
+            "doc_url": "https://docs.acume.dev/errors#malformed_json"
+          }
+        }
+      },
+      "InvalidQueryParameter": {
+        "summary": "Invalid query parameter (limit/cursor)",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "message": "limit must be 1..200",
+            "request_id": "req_d3d9446802a44259755d38e6d163e820",
+            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+          }
+        }
+      },
+      "ValidationError": {
+        "summary": "Request body failed schema validation",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "validation_error",
+            "message": "Request validation failed. See details for the full list.",
+            "details": [
+              {
+                "field": "supplier_number",
+                "reason": "missing",
+                "message": "Field required"
+              },
+              {
+                "field": "currency",
+                "reason": "invalid_format",
+                "message": "Must be exactly 3 characters (ISO 4217 format)"
+              }
+            ],
+            "request_id": "req_6512bd43d9caa6e02c990b0a82652dca",
+            "doc_url": "https://docs.acume.dev/errors#validation_error"
+          }
+        }
+      },
+      "ResourceMissing": {
+        "summary": "A referenced resource doesn't exist (e.g. unknown tax_category)",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_missing",
+            "message": "Unknown tax_category 'X'",
+            "field": "tax_category",
+            "request_id": "req_c20ad4d76fe97759aa27a0c99bff6710",
+            "doc_url": "https://docs.acume.dev/errors#resource_missing"
+          }
+        }
+      },
+      "ResourceAlreadyExists": {
+        "summary": "Duplicate value for a unique field",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_already_exists",
+            "message": "Supplier 'SUP-1' already exists",
+            "field": "supplier_number",
+            "request_id": "req_aab3238922bcc25a6f606eb525ffdc56",
+            "doc_url": "https://docs.acume.dev/errors#resource_already_exists"
+          }
+        }
+      },
+      "NoValidFieldsToUpdate": {
+        "summary": "PATCH body contained no recognized, updatable fields",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "message": "No valid fields to update",
+            "request_id": "req_1679091c5a880faf6fb5e6087eb1b2dc",
+            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+          }
+        }
+      },
+      "GlCodeDuplicateOnUpdate": {
+        "summary": "Renaming a GL code's `code` to a value that's already in use",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "message": "GL code 'GL-100' already exists",
+            "field": "code",
+            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543",
+            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+          }
+        }
+      },
+      "IdempotencyKeyReused": {
+        "summary": "Idempotency-Key reused with a different request payload",
+        "value": {
+          "error": {
+            "type": "idempotency_error",
+            "code": "idempotency_key_reused",
+            "message": "This Idempotency-Key was already used with a different request payload.",
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
+            "doc_url": "https://docs.acume.dev/errors#idempotency_key_reused"
+          }
+        }
+      },
+      "IdempotencyInProgress": {
+        "summary": "A request with this Idempotency-Key is still being processed",
+        "value": {
+          "error": {
+            "type": "idempotency_error",
+            "code": "idempotency_in_progress",
+            "message": "A request with this Idempotency-Key is still being processed.",
+            "request_id": "req_d3d9446802a44259755d38e6d163e820",
+            "doc_url": "https://docs.acume.dev/errors#idempotency_in_progress"
+          }
+        }
+      },
+      "SupplierNotFound": {
+        "summary": "Supplier not found",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_not_found",
+            "message": "Supplier 'SUP-1' not found",
+            "request_id": "req_c74d97b01eae257e44aa9d5bade97baf",
+            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+          }
+        }
+      },
+      "ContactNotFound": {
+        "summary": "Supplier contact not found",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_not_found",
+            "message": "Contact '123' not found",
+            "request_id": "req_70efdf2ec9b086079795c442636b55fb",
+            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+          }
+        }
+      },
+      "GlCodeNotFound": {
+        "summary": "GL code not found",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_not_found",
+            "message": "GL code with id '456' not found",
+            "request_id": "req_6f4922f45568161a8cdf4ad2299f6d23",
+            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+          }
+        }
+      },
+      "GlSegmentNotFound": {
+        "summary": "GL segment not found",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_not_found",
+            "message": "GL segment with id '789' not found",
+            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4",
+            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Exchange your api_key for a short-lived JWT via POST /v1/auth/token."
       }
     }
   }
