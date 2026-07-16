@@ -4820,7 +4820,7 @@
               }
             ],
             "default": null,
-            "description": "Contact name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "description": "Contact name. Defaults to the supplier's name if omitted. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
           },
           "phone": {
@@ -5376,19 +5376,6 @@
             "description": "Hierarchy level of this segment, 1-7.",
             "title": "Level"
           },
-          "field_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Internal field/column name this segment maps to.",
-            "title": "Field Name"
-          },
           "status": {
             "anyOf": [
               {
@@ -5478,21 +5465,6 @@
             "default": null,
             "description": "Longer free-text description of the GL segment's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
-          },
-          "field_name": {
-            "anyOf": [
-              {
-                "maxLength": 50,
-                "minLength": 1,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Internal field/column name this segment maps to. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
-            "title": "Field Name"
           },
           "is_default": {
             "anyOf": [
@@ -5600,19 +5572,6 @@
             "description": "Hierarchy level of this segment, 1-7.",
             "title": "Level"
           },
-          "field_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Internal field/column name this segment maps to.",
-            "title": "Field Name"
-          },
           "status": {
             "anyOf": [
               {
@@ -5695,21 +5654,6 @@
             "default": null,
             "description": "Longer free-text description of the GL segment's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
-          },
-          "field_name": {
-            "anyOf": [
-              {
-                "maxLength": 50,
-                "minLength": 1,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Internal field/column name this segment maps to. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
-            "title": "Field Name"
           },
           "is_default": {
             "anyOf": [
@@ -6189,7 +6133,6 @@
           "level": 3,
           "alt_id": "SEG-OPS",
           "description": "Operations department segment",
-          "field_name": "department",
           "is_default": true,
           "status": "1"
         }
