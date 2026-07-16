@@ -340,6 +340,17 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateSupplierInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateSupplierMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/CreateSupplierFull"
+                },
+                "with_peppol": {
+                  "$ref": "#/components/examples/CreateSupplierWithPeppol"
+                }
               }
             }
           }
@@ -609,6 +620,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateSupplierInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/UpdateSupplierMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/UpdateSupplierFull"
+                }
               }
             }
           }
@@ -1079,6 +1098,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateContactsInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateContactsMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/CreateContactsFull"
+                }
               }
             }
           }
@@ -1381,6 +1408,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateContactInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/UpdateContactMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/UpdateContactFull"
+                }
               }
             }
           }
@@ -1811,6 +1846,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateGlCodeInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateGlCodeMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/CreateGlCodeFull"
+                }
               }
             }
           }
@@ -2083,6 +2126,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateGlCodeInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/UpdateGlCodeMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/UpdateGlCodeFull"
+                }
               }
             }
           }
@@ -2512,6 +2563,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateGlSegmentInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateGlSegmentMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/CreateGlSegmentFull"
+                }
               }
             }
           }
@@ -2781,6 +2840,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateGlSegmentInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/UpdateGlSegmentMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/UpdateGlSegmentFull"
+                }
               }
             }
           }
@@ -3099,6 +3166,7 @@
               }
             ],
             "default": null,
+            "description": "Supplier number, used as the external identifier.",
             "title": "Id"
           },
           "name": {
@@ -3111,6 +3179,7 @@
               }
             ],
             "default": null,
+            "description": "Supplier name.",
             "title": "Name"
           },
           "status": {
@@ -3123,6 +3192,7 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "currency": {
@@ -3135,6 +3205,7 @@
               }
             ],
             "default": null,
+            "description": "ISO 4217 3-letter currency code.",
             "title": "Currency"
           },
           "country": {
@@ -3147,6 +3218,7 @@
               }
             ],
             "default": null,
+            "description": "ISO 3166-1 alpha-2 country code.",
             "title": "Country"
           },
           "abn_or_nzbn": {
@@ -3159,6 +3231,7 @@
               }
             ],
             "default": null,
+            "description": "AU ABN or NZ NZBN, derived from legal_registration_identifier. Read-only.",
             "title": "Abn Or Nzbn"
           },
           "payment_terms": {
@@ -3171,6 +3244,7 @@
               }
             ],
             "default": null,
+            "description": "Payment terms.",
             "title": "Payment Terms"
           },
           "updated_at": {
@@ -3183,6 +3257,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           }
         },
@@ -3204,6 +3279,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 1. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Line 1"
           },
           "line_2": {
@@ -3218,6 +3294,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 2. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Line 2"
           },
           "line_3": {
@@ -3232,6 +3309,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 3. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Line 3"
           },
           "city": {
@@ -3246,6 +3324,7 @@
               }
             ],
             "default": null,
+            "description": "City or town. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "City"
           },
           "postal_code": {
@@ -3260,6 +3339,7 @@
               }
             ],
             "default": null,
+            "description": "Postal or zip code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Postal Code"
           },
           "subdivision": {
@@ -3274,6 +3354,7 @@
               }
             ],
             "default": null,
+            "description": "State, province, or other regional subdivision. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Subdivision"
           }
         },
@@ -3284,6 +3365,7 @@
         "additionalProperties": false,
         "properties": {
           "account_number": {
+            "description": "Bank account number. Letters and digits only. Spaces and hyphens are accepted but stripped before storage (e.g. '12-3456 7890' becomes '1234567890').",
             "maxLength": 255,
             "minLength": 1,
             "title": "Account Number",
@@ -3299,6 +3381,7 @@
               }
             ],
             "default": null,
+            "description": "Whether this is the default account for payments. At most one account in a given bank_accounts list may be explicitly true; submitting more than one raises a validation error.",
             "title": "Is Default"
           }
         },
@@ -3312,18 +3395,21 @@
         "additionalProperties": false,
         "properties": {
           "supplier_number": {
+            "description": "Unique supplier identifier, set at creation and immutable thereafter (not present on UpdateSupplierInput).",
             "maxLength": 255,
             "minLength": 1,
             "title": "Supplier Number",
             "type": "string"
           },
           "name": {
+            "description": "Supplier name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 255,
             "minLength": 1,
             "title": "Name",
             "type": "string"
           },
           "country": {
+            "description": "ISO 3166-1 alpha-2 country code (e.g. NZ, AU). Case-insensitive; normalized to uppercase. Only NZ and AU are saved, other country codes are discarded.",
             "minLength": 1,
             "title": "Country",
             "type": "string"
@@ -3346,6 +3432,7 @@
               }
             ],
             "default": null,
+            "description": "Full legal/formal name of the supplier, if different from `name`. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Full Formal Name"
           },
           "tax_category": {
@@ -3381,6 +3468,7 @@
               }
             ],
             "default": null,
+            "description": "Payment terms (e.g. '30D'). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Payment Terms"
           },
           "tax_reg_no": {
@@ -3395,6 +3483,7 @@
               }
             ],
             "default": null,
+            "description": "Tax registration number. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Tax Reg No"
           },
           "document_delivery_channel": {
@@ -3411,6 +3500,7 @@
               }
             ],
             "default": null,
+            "description": "How documents are delivered to this supplier: 'email' or 'peppol'. Omit if not yet known/configured.",
             "title": "Document Delivery Channel"
           },
           "legal_registration_identifier": {
@@ -3440,6 +3530,7 @@
               }
             ],
             "default": null,
+            "description": "Any additional legal information about the supplier. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Additional Legal Info"
           },
           "supplier_alt_id": {
@@ -3454,6 +3545,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative/external identifier for the supplier. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Supplier Alt Id"
           },
           "status": {
@@ -3466,6 +3558,7 @@
               }
             ],
             "default": "1",
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
             "title": "Status"
           },
           "address": {
@@ -3477,7 +3570,8 @@
                 "type": "null"
               }
             ],
-            "default": null
+            "default": null,
+            "description": "Supplier's postal/business address."
           },
           "bank_accounts": {
             "anyOf": [
@@ -3492,6 +3586,7 @@
               }
             ],
             "default": null,
+            "description": "Bank accounts to create for this supplier.",
             "title": "Bank Accounts"
           }
         },
@@ -3648,6 +3743,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 1.",
             "title": "Line 1"
           },
           "line_2": {
@@ -3660,6 +3756,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 2.",
             "title": "Line 2"
           },
           "line_3": {
@@ -3672,6 +3769,7 @@
               }
             ],
             "default": null,
+            "description": "Address line 3.",
             "title": "Line 3"
           },
           "city": {
@@ -3684,6 +3782,7 @@
               }
             ],
             "default": null,
+            "description": "City or town.",
             "title": "City"
           },
           "postal_code": {
@@ -3696,6 +3795,7 @@
               }
             ],
             "default": null,
+            "description": "Postal or zip code.",
             "title": "Postal Code"
           },
           "subdivision": {
@@ -3708,6 +3808,7 @@
               }
             ],
             "default": null,
+            "description": "State, province, or other regional subdivision.",
             "title": "Subdivision"
           }
         },
@@ -3727,6 +3828,7 @@
               }
             ],
             "default": null,
+            "description": "Internal bank account row identifier.",
             "title": "Id"
           },
           "account_number": {
@@ -3739,10 +3841,12 @@
               }
             ],
             "default": null,
+            "description": "Bank account number, stored digits/letters-only (hyphens and spaces stripped).",
             "title": "Account Number"
           },
           "is_default": {
             "default": false,
+            "description": "Whether this is the default account for payments.",
             "title": "Is Default",
             "type": "boolean"
           }
@@ -3763,6 +3867,7 @@
               }
             ],
             "default": null,
+            "description": "Internal contact row identifier.",
             "title": "Id"
           },
           "name": {
@@ -3775,6 +3880,7 @@
               }
             ],
             "default": null,
+            "description": "Contact name.",
             "title": "Name"
           },
           "email": {
@@ -3787,6 +3893,7 @@
               }
             ],
             "default": null,
+            "description": "Contact email address.",
             "title": "Email"
           },
           "phone": {
@@ -3799,6 +3906,7 @@
               }
             ],
             "default": null,
+            "description": "Contact phone number.",
             "title": "Phone"
           }
         },
@@ -3818,6 +3926,7 @@
               }
             ],
             "default": null,
+            "description": "Internal default coding line identifier.",
             "title": "Id"
           },
           "line_number": {
@@ -3830,6 +3939,7 @@
               }
             ],
             "default": null,
+            "description": "Sequence number of this line within the supplier's default codings.",
             "title": "Line Number"
           },
           "gl_code": {
@@ -3842,6 +3952,7 @@
               }
             ],
             "default": null,
+            "description": "GL code for this default coding line.",
             "title": "Gl Code"
           },
           "gl_code_description": {
@@ -3854,6 +3965,7 @@
               }
             ],
             "default": null,
+            "description": "Display description of the GL code, joined from the GL codes table.",
             "title": "Gl Code Description"
           },
           "allocation_percentage": {
@@ -3870,6 +3982,7 @@
               }
             ],
             "default": null,
+            "description": "Percentage of the invoice allocated to this line, 0-100.",
             "title": "Allocation Percentage"
           },
           "tax_rate": {
@@ -3882,6 +3995,7 @@
               }
             ],
             "default": null,
+            "description": "Tax rate for this line, as submitted (e.g. '15%').",
             "title": "Tax Rate"
           },
           "branch": {
@@ -3894,6 +4008,7 @@
               }
             ],
             "default": null,
+            "description": "Branch code or name.",
             "title": "Branch"
           },
           "department": {
@@ -3906,6 +4021,7 @@
               }
             ],
             "default": null,
+            "description": "Department code or name.",
             "title": "Department"
           },
           "project_code": {
@@ -3918,6 +4034,7 @@
               }
             ],
             "default": null,
+            "description": "Project code, if applicable.",
             "title": "Project Code"
           },
           "suffix_1": {
@@ -3930,6 +4047,7 @@
               }
             ],
             "default": null,
+            "description": "GL account suffix segment 1.",
             "title": "Suffix 1"
           },
           "suffix_2": {
@@ -3942,6 +4060,7 @@
               }
             ],
             "default": null,
+            "description": "GL account suffix segment 2.",
             "title": "Suffix 2"
           },
           "suffix_3": {
@@ -3954,6 +4073,7 @@
               }
             ],
             "default": null,
+            "description": "GL account suffix segment 3.",
             "title": "Suffix 3"
           },
           "suffix_4": {
@@ -3966,6 +4086,7 @@
               }
             ],
             "default": null,
+            "description": "GL account suffix segment 4.",
             "title": "Suffix 4"
           }
         },
@@ -3985,6 +4106,7 @@
               }
             ],
             "default": null,
+            "description": "Internal Peppol record identifier.",
             "title": "Id"
           },
           "eas_id": {
@@ -3997,6 +4119,7 @@
               }
             ],
             "default": null,
+            "description": "Peppol Electronic Address Scheme identifier.",
             "title": "Eas Id"
           },
           "peppol_status_id": {
@@ -4009,6 +4132,7 @@
               }
             ],
             "default": null,
+            "description": "Internal status identifier for this supplier's Peppol registration.",
             "title": "Peppol Status Id"
           },
           "legal_registration_identifier": {
@@ -4021,6 +4145,7 @@
               }
             ],
             "default": null,
+            "description": "Legal registration identifier used for Peppol, digits-only for AU/NZ.",
             "title": "Legal Registration Identifier"
           },
           "customization_id": {
@@ -4033,6 +4158,7 @@
               }
             ],
             "default": null,
+            "description": "Peppol document customization identifier.",
             "title": "Customization Id"
           },
           "profile_id": {
@@ -4045,6 +4171,7 @@
               }
             ],
             "default": null,
+            "description": "Peppol transaction profile identifier.",
             "title": "Profile Id"
           }
         },
@@ -4064,6 +4191,7 @@
               }
             ],
             "default": null,
+            "description": "Supplier number, used as the external identifier.",
             "title": "Id"
           },
           "name": {
@@ -4076,6 +4204,7 @@
               }
             ],
             "default": null,
+            "description": "Supplier name.",
             "title": "Name"
           },
           "status": {
@@ -4088,6 +4217,7 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "currency": {
@@ -4100,6 +4230,7 @@
               }
             ],
             "default": null,
+            "description": "ISO 4217 3-letter currency code.",
             "title": "Currency"
           },
           "country": {
@@ -4112,6 +4243,7 @@
               }
             ],
             "default": null,
+            "description": "ISO 3166-1 alpha-2 country code.",
             "title": "Country"
           },
           "abn_or_nzbn": {
@@ -4124,6 +4256,7 @@
               }
             ],
             "default": null,
+            "description": "AU ABN or NZ NZBN, derived from legal_registration_identifier. Read-only.",
             "title": "Abn Or Nzbn"
           },
           "payment_terms": {
@@ -4136,6 +4269,7 @@
               }
             ],
             "default": null,
+            "description": "Payment terms.",
             "title": "Payment Terms"
           },
           "updated_at": {
@@ -4148,6 +4282,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           },
           "full_formal_name": {
@@ -4160,6 +4295,7 @@
               }
             ],
             "default": null,
+            "description": "Full legal/formal name of the supplier.",
             "title": "Full Formal Name"
           },
           "tax_category": {
@@ -4172,6 +4308,7 @@
               }
             ],
             "default": null,
+            "description": "Tax category code.",
             "title": "Tax Category"
           },
           "tax_rate": {
@@ -4184,6 +4321,7 @@
               }
             ],
             "default": null,
+            "description": "Tax rate, as stored (may include '%').",
             "title": "Tax Rate"
           },
           "tax_reg_no": {
@@ -4196,6 +4334,7 @@
               }
             ],
             "default": null,
+            "description": "Tax registration number.",
             "title": "Tax Reg No"
           },
           "nzbn": {
@@ -4208,6 +4347,7 @@
               }
             ],
             "default": null,
+            "description": "NZ Business Number, if applicable. Read-only.",
             "title": "Nzbn"
           },
           "additional_legal_info": {
@@ -4220,6 +4360,7 @@
               }
             ],
             "default": null,
+            "description": "Any additional legal information about the supplier.",
             "title": "Additional Legal Info"
           },
           "supplier_alt_id": {
@@ -4232,18 +4373,12 @@
               }
             ],
             "default": null,
+            "description": "Alternative/external identifier for the supplier.",
             "title": "Supplier Alt Id"
           },
           "address": {
             "$ref": "#/components/schemas/Address",
-            "default": {
-              "line_1": null,
-              "line_2": null,
-              "line_3": null,
-              "city": null,
-              "postal_code": null,
-              "subdivision": null
-            }
+            "description": "Supplier's postal/business address."
           },
           "document_delivery_channel": {
             "anyOf": [
@@ -4255,6 +4390,7 @@
               }
             ],
             "default": null,
+            "description": "How documents are delivered to this supplier.",
             "title": "Document Delivery Channel"
           },
           "peppol": {
@@ -4266,10 +4402,11 @@
                 "type": "null"
               }
             ],
-            "default": null
+            "default": null,
+            "description": "Peppol e-invoicing registration details, if registered."
           },
           "bank_accounts": {
-            "default": [],
+            "description": "Bank accounts on file for this supplier.",
             "items": {
               "$ref": "#/components/schemas/BankAccount"
             },
@@ -4277,7 +4414,7 @@
             "type": "array"
           },
           "contacts": {
-            "default": [],
+            "description": "Contacts on file for this supplier.",
             "items": {
               "$ref": "#/components/schemas/Contact"
             },
@@ -4285,7 +4422,7 @@
             "type": "array"
           },
           "default_codings": {
-            "default": [],
+            "description": "Default GL coding lines for this supplier.",
             "items": {
               "$ref": "#/components/schemas/DefaultCodingLine"
             },
@@ -4298,7 +4435,7 @@
       },
       "UpdateSupplierInput": {
         "additionalProperties": false,
-        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\nBank accounts are synced as a full replace when provided (frontend sends complete list).\nContacts use dedicated sub-resource endpoints (/contacts).\nDefault codings use dedicated sub-resource endpoints (/default-codings).\nAddress (1:1) and legal_registration_identifier are updated directly in this endpoint.",
+        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\nBank accounts are synced as a full replace when provided (frontend sends complete list).\nContacts use dedicated sub-resource endpoints (/contacts).\nDefault codings use dedicated sub-resource endpoints (/default-codings).\nAddress (1:1) and legal_registration_identifier are updated directly in this endpoint.\nsupplier_number is immutable once set and is intentionally not present here.",
         "properties": {
           "name": {
             "anyOf": [
@@ -4312,6 +4449,7 @@
               }
             ],
             "default": null,
+            "description": "Supplier name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
           },
           "full_formal_name": {
@@ -4326,6 +4464,7 @@
               }
             ],
             "default": null,
+            "description": "Full legal/formal name of the supplier, if different from `name`. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Full Formal Name"
           },
           "country": {
@@ -4339,6 +4478,7 @@
               }
             ],
             "default": null,
+            "description": "ISO 3166-1 alpha-2 country code (e.g. NZ, AU). Case-insensitive; normalized to uppercase.",
             "title": "Country"
           },
           "status": {
@@ -4351,6 +4491,7 @@
               }
             ],
             "default": null,
+            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
             "title": "Status"
           },
           "tax_category": {
@@ -4415,6 +4556,7 @@
               }
             ],
             "default": null,
+            "description": "Payment terms (e.g. '30D'). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Payment Terms"
           },
           "tax_reg_no": {
@@ -4429,6 +4571,7 @@
               }
             ],
             "default": null,
+            "description": "Tax registration number. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Tax Reg No"
           },
           "document_delivery_channel": {
@@ -4445,6 +4588,7 @@
               }
             ],
             "default": null,
+            "description": "How documents are delivered to this supplier: 'email' or 'peppol'. Omit to leave unchanged.",
             "title": "Document Delivery Channel"
           },
           "legal_registration_identifier": {
@@ -4474,6 +4618,7 @@
               }
             ],
             "default": null,
+            "description": "Any additional legal information about the supplier. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Additional Legal Info"
           },
           "supplier_alt_id": {
@@ -4488,6 +4633,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative/external identifier for the supplier. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Supplier Alt Id"
           },
           "address": {
@@ -4499,7 +4645,8 @@
                 "type": "null"
               }
             ],
-            "default": null
+            "default": null,
+            "description": "Supplier's postal/business address. Full replace of the address object when provided."
           },
           "bank_accounts": {
             "anyOf": [
@@ -4514,6 +4661,7 @@
               }
             ],
             "default": null,
+            "description": "Full replacement of this supplier's bank accounts. If provided, the entire existing set is replaced \u2014 this is not a merge or append. Omit this field entirely to leave existing bank accounts unchanged. Submit an empty list ([]) or null to remove all bank accounts. ",
             "title": "Bank Accounts"
           }
         },
@@ -4654,6 +4802,7 @@
         "additionalProperties": false,
         "properties": {
           "email": {
+            "description": "Contact email address. Must contain a local part, an @, and a domain with at least one dot (e.g. name@example.com). Not validated against the full RFC 5322 email spec, so some unusual-but-technically-valid formats may be rejected.",
             "maxLength": 255,
             "minLength": 1,
             "title": "Email",
@@ -4671,6 +4820,7 @@
               }
             ],
             "default": null,
+            "description": "Contact name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
           },
           "phone": {
@@ -4685,6 +4835,7 @@
               }
             ],
             "default": null,
+            "description": "Contact phone number. Digits, spaces, and the characters + - ( ) . / , with an optional extension suffix (e.g. 'x123' or 'ext. 123').",
             "title": "Phone"
           }
         },
@@ -4699,6 +4850,7 @@
         "description": "Bulk-create payload: one or more supplier contacts in a single request.",
         "properties": {
           "contacts": {
+            "description": "One or more contacts to create for this supplier, up to 100 per request.",
             "items": {
               "$ref": "#/components/schemas/ContactInput"
             },
@@ -4730,6 +4882,7 @@
               }
             ],
             "default": null,
+            "description": "Contact name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
           },
           "email": {
@@ -4744,6 +4897,7 @@
               }
             ],
             "default": null,
+            "description": "Contact email address. Must contain a local part, an @, and a domain with at least one dot (e.g. name@example.com). Not validated against the full RFC 5322 email spec, so some unusual-but-technically-valid formats may be rejected.",
             "title": "Email"
           },
           "phone": {
@@ -4758,6 +4912,7 @@
               }
             ],
             "default": null,
+            "description": "Contact phone number. Digits, spaces, and the characters + - ( ) . / , with an optional extension suffix (e.g. 'x123' or 'ext. 123').",
             "title": "Phone"
           }
         },
@@ -4777,6 +4932,7 @@
               }
             ],
             "default": null,
+            "description": "Internal GL code row identifier.",
             "title": "Id"
           },
           "code": {
@@ -4789,6 +4945,7 @@
               }
             ],
             "default": null,
+            "description": "Unique general ledger code.",
             "title": "Code"
           },
           "name": {
@@ -4801,6 +4958,7 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL code.",
             "title": "Name"
           },
           "description": {
@@ -4813,6 +4971,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL code's purpose.",
             "title": "Description"
           },
           "type": {
@@ -4825,6 +4984,7 @@
               }
             ],
             "default": null,
+            "description": "GL code type or category.",
             "title": "Type"
           },
           "status": {
@@ -4837,6 +4997,7 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "updated_at": {
@@ -4849,6 +5010,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           }
         },
@@ -4859,18 +5021,21 @@
         "additionalProperties": false,
         "properties": {
           "code": {
+            "description": "Unique general ledger code. Uniqueness is enforced at save time. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 100,
             "minLength": 1,
             "title": "Code",
             "type": "string"
           },
           "name": {
+            "description": "Display name for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 100,
             "minLength": 1,
             "title": "Name",
             "type": "string"
           },
           "type": {
+            "description": "GL code type or category (e.g. 'expense', 'revenue', 'asset'). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 50,
             "minLength": 1,
             "title": "Type",
@@ -4888,6 +5053,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative identifier for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Alt Id"
           },
           "description": {
@@ -4902,6 +5068,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL code's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
           },
           "status": {
@@ -4918,6 +5085,7 @@
               }
             ],
             "default": "1",
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
             "title": "Status"
           }
         },
@@ -4942,6 +5110,7 @@
               }
             ],
             "default": null,
+            "description": "Internal GL code row identifier.",
             "title": "Id"
           },
           "code": {
@@ -4954,6 +5123,7 @@
               }
             ],
             "default": null,
+            "description": "Unique general ledger code.",
             "title": "Code"
           },
           "name": {
@@ -4966,6 +5136,7 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL code.",
             "title": "Name"
           },
           "description": {
@@ -4978,6 +5149,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL code's purpose.",
             "title": "Description"
           },
           "type": {
@@ -4990,6 +5162,7 @@
               }
             ],
             "default": null,
+            "description": "GL code type or category.",
             "title": "Type"
           },
           "status": {
@@ -5002,6 +5175,7 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "updated_at": {
@@ -5014,6 +5188,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           },
           "created_at": {
@@ -5026,6 +5201,7 @@
               }
             ],
             "default": null,
+            "description": "Created timestamp in ISO-8601 UTC format.",
             "title": "Created At"
           }
         },
@@ -5034,6 +5210,7 @@
       },
       "UpdateGlCodeInput": {
         "additionalProperties": false,
+        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).",
         "properties": {
           "code": {
             "anyOf": [
@@ -5047,6 +5224,7 @@
               }
             ],
             "default": null,
+            "description": "Unique general ledger code. Uniqueness is enforced at save time. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Code"
           },
           "name": {
@@ -5061,21 +5239,8 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "maxLength": 200,
-                "minLength": 1,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Description"
           },
           "type": {
             "anyOf": [
@@ -5089,7 +5254,38 @@
               }
             ],
             "default": null,
+            "description": "GL code type or category (e.g. 'expense', 'revenue', 'asset'). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Type"
+          },
+          "alt_id": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Alternative identifier for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Alt Id"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Longer free-text description of the GL code's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Description"
           },
           "status": {
             "anyOf": [
@@ -5104,7 +5300,8 @@
                 "type": "null"
               }
             ],
-            "default": "1",
+            "default": null,
+            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
             "title": "Status"
           }
         },
@@ -5124,6 +5321,7 @@
               }
             ],
             "default": null,
+            "description": "Internal GL segment row identifier.",
             "title": "Id"
           },
           "alt_id": {
@@ -5136,6 +5334,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative identifier for the GL segment.",
             "title": "Alt Id"
           },
           "name": {
@@ -5148,6 +5347,7 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL segment.",
             "title": "Name"
           },
           "description": {
@@ -5160,6 +5360,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL segment's purpose.",
             "title": "Description"
           },
           "level": {
@@ -5172,6 +5373,7 @@
               }
             ],
             "default": null,
+            "description": "Hierarchy level of this segment, 1-7.",
             "title": "Level"
           },
           "field_name": {
@@ -5184,6 +5386,7 @@
               }
             ],
             "default": null,
+            "description": "Internal field/column name this segment maps to.",
             "title": "Field Name"
           },
           "status": {
@@ -5196,10 +5399,12 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "is_default": {
             "default": false,
+            "description": "Whether this is the default segment for its level.",
             "title": "Is Default",
             "type": "boolean"
           },
@@ -5213,6 +5418,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           }
         },
@@ -5223,12 +5429,14 @@
         "additionalProperties": false,
         "properties": {
           "name": {
+            "description": "Display name for the GL segment. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 255,
             "minLength": 1,
             "title": "Name",
             "type": "string"
           },
           "level": {
+            "description": "Hierarchy level of this segment, 1-7. Fixed at creation; cannot be changed afterwards (see UpdateGlSegmentInput).",
             "enum": [
               1,
               2,
@@ -5253,6 +5461,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative identifier for the GL segment, typically a UUID (max 36 characters). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Alt Id"
           },
           "description": {
@@ -5267,6 +5476,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL segment's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
           },
           "field_name": {
@@ -5281,6 +5491,7 @@
               }
             ],
             "default": null,
+            "description": "Internal field/column name this segment maps to. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Field Name"
           },
           "is_default": {
@@ -5293,6 +5504,7 @@
               }
             ],
             "default": false,
+            "description": "Whether this is the default segment for its level. Defaults to false if omitted.",
             "title": "Is Default"
           },
           "status": {
@@ -5309,6 +5521,7 @@
               }
             ],
             "default": "1",
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
             "title": "Status"
           }
         },
@@ -5332,6 +5545,7 @@
               }
             ],
             "default": null,
+            "description": "Internal GL segment row identifier.",
             "title": "Id"
           },
           "alt_id": {
@@ -5344,6 +5558,7 @@
               }
             ],
             "default": null,
+            "description": "Alternative identifier for the GL segment.",
             "title": "Alt Id"
           },
           "name": {
@@ -5356,6 +5571,7 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL segment.",
             "title": "Name"
           },
           "description": {
@@ -5368,6 +5584,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL segment's purpose.",
             "title": "Description"
           },
           "level": {
@@ -5380,6 +5597,7 @@
               }
             ],
             "default": null,
+            "description": "Hierarchy level of this segment, 1-7.",
             "title": "Level"
           },
           "field_name": {
@@ -5392,6 +5610,7 @@
               }
             ],
             "default": null,
+            "description": "Internal field/column name this segment maps to.",
             "title": "Field Name"
           },
           "status": {
@@ -5404,10 +5623,12 @@
               }
             ],
             "default": null,
+            "description": "Status code ('1' active, '0' inactive).",
             "title": "Status"
           },
           "is_default": {
             "default": false,
+            "description": "Whether this is the default segment for its level.",
             "title": "Is Default",
             "type": "boolean"
           },
@@ -5421,6 +5642,7 @@
               }
             ],
             "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
             "title": "Updated At"
           },
           "created_at": {
@@ -5433,6 +5655,7 @@
               }
             ],
             "default": null,
+            "description": "Created timestamp in ISO-8601 UTC format.",
             "title": "Created At"
           }
         },
@@ -5441,6 +5664,7 @@
       },
       "UpdateGlSegmentInput": {
         "additionalProperties": false,
+        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\n`level` and `alt_id` cannot be changed after creation and are intentionally not\nsettable here.",
         "properties": {
           "name": {
             "anyOf": [
@@ -5454,6 +5678,7 @@
               }
             ],
             "default": null,
+            "description": "Display name for the GL segment. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
           },
           "description": {
@@ -5468,6 +5693,7 @@
               }
             ],
             "default": null,
+            "description": "Longer free-text description of the GL segment's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
           },
           "field_name": {
@@ -5482,6 +5708,7 @@
               }
             ],
             "default": null,
+            "description": "Internal field/column name this segment maps to. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Field Name"
           },
           "is_default": {
@@ -5494,6 +5721,7 @@
               }
             ],
             "default": null,
+            "description": "Whether this is the default segment for its level. Omit to leave unchanged.",
             "title": "Is Default"
           },
           "status": {
@@ -5509,7 +5737,8 @@
                 "type": "null"
               }
             ],
-            "default": "1",
+            "default": null,
+            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
             "title": "Status"
           }
         },
@@ -5791,6 +6020,192 @@
             "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4",
             "doc_url": "https://docs.acume.dev/errors#resource_not_found"
           }
+        }
+      },
+      "CreateSupplierMinimal": {
+        "summary": "Minimal required fields only",
+        "value": {
+          "supplier_number": "SUP-1001",
+          "name": "Acme Tyres Ltd",
+          "country": "NZ",
+          "currency": "NZD",
+          "tax_rate": "15%"
+        }
+      },
+      "CreateSupplierFull": {
+        "summary": "Full payload including a default bank account",
+        "value": {
+          "supplier_number": "SUP-1001",
+          "name": "Acme Tyres Ltd",
+          "country": "NZ",
+          "currency": "NZD",
+          "full_formal_name": "Acme Tyres Limited",
+          "tax_category": "S",
+          "tax_rate": "15%",
+          "payment_terms": "NET30",
+          "tax_reg_no": "123-456-789",
+          "document_delivery_channel": "email",
+          "legal_registration_identifier": "9429041234567",
+          "additional_legal_info": null,
+          "supplier_alt_id": "ACME-NZ",
+          "status": "1",
+          "address": {
+            "line_1": "1 Queen Street",
+            "line_2": null,
+            "line_3": null,
+            "city": "Auckland",
+            "postal_code": "1010",
+            "subdivision": "Auckland"
+          },
+          "bank_accounts": [
+            {
+              "account_number": "12-3456-7890123-00",
+              "is_default": true
+            }
+          ]
+        }
+      },
+      "CreateSupplierWithPeppol": {
+        "summary": "NZ/AU supplier using Peppol delivery",
+        "value": {
+          "supplier_number": "SUP-1002",
+          "name": "Acme Tyres Ltd",
+          "country": "NZ",
+          "currency": "NZD",
+          "tax_category": "S",
+          "tax_rate": "15%",
+          "document_delivery_channel": "peppol",
+          "legal_registration_identifier": "9429041234567"
+        }
+      },
+      "UpdateSupplierMinimal": {
+        "summary": "Deactivate an existing supplier",
+        "value": {
+          "status": "0"
+        }
+      },
+      "UpdateSupplierFull": {
+        "summary": "Update name, address and replace bank accounts",
+        "value": {
+          "name": "Acme Tyres (Auckland)",
+          "address": {
+            "line_1": "2 Queen Street",
+            "city": "Auckland",
+            "postal_code": "1010",
+            "subdivision": "Auckland"
+          },
+          "bank_accounts": [
+            {
+              "account_number": "12-3456-7890123-99",
+              "is_default": true
+            }
+          ]
+        }
+      },
+      "CreateContactsMinimal": {
+        "summary": "A single contact with only the required email",
+        "value": {
+          "contacts": [
+            {
+              "email": "ap@acmetyres.example.com"
+            }
+          ]
+        }
+      },
+      "CreateContactsFull": {
+        "summary": "Multiple contacts with full details",
+        "value": {
+          "contacts": [
+            {
+              "email": "ap@acmetyres.example.com",
+              "name": "Accounts Payable",
+              "phone": "+64 9 555 0100"
+            },
+            {
+              "email": "billing@acmetyres.example.com",
+              "name": "Billing Team",
+              "phone": "+64 9 555 0101"
+            }
+          ]
+        }
+      },
+      "UpdateContactMinimal": {
+        "summary": "Update only the email",
+        "value": {
+          "email": "new-ap@acmetyres.example.com"
+        }
+      },
+      "UpdateContactFull": {
+        "summary": "Update name, email and phone",
+        "value": {
+          "name": "AP Manager",
+          "email": "ap-manager@acmetyres.example.com",
+          "phone": "+64 9 555 0200"
+        }
+      },
+      "CreateGlCodeMinimal": {
+        "summary": "Only the required fields",
+        "value": {
+          "code": "6100",
+          "name": "Office Supplies",
+          "type": "expense"
+        }
+      },
+      "CreateGlCodeFull": {
+        "summary": "GL code with optional fields",
+        "value": {
+          "code": "6100",
+          "name": "Office Supplies",
+          "type": "expense",
+          "alt_id": "GL-6100",
+          "description": "General office supply expenses",
+          "status": "1"
+        }
+      },
+      "UpdateGlCodeMinimal": {
+        "summary": "Disable a GL code",
+        "value": {
+          "status": "0"
+        }
+      },
+      "UpdateGlCodeFull": {
+        "summary": "Update name and description",
+        "value": {
+          "name": "Office Supplies & Stationery",
+          "description": "Updated description"
+        }
+      },
+      "CreateGlSegmentMinimal": {
+        "summary": "Only the required fields",
+        "value": {
+          "name": "Operations",
+          "level": 3
+        }
+      },
+      "CreateGlSegmentFull": {
+        "summary": "GL segment with optional fields",
+        "value": {
+          "name": "Operations",
+          "level": 3,
+          "alt_id": "SEG-OPS",
+          "description": "Operations department segment",
+          "field_name": "department",
+          "is_default": true,
+          "status": "1"
+        }
+      },
+      "UpdateGlSegmentMinimal": {
+        "summary": "Set a segment as the default",
+        "value": {
+          "is_default": true
+        }
+      },
+      "UpdateGlSegmentFull": {
+        "summary": "Update name, description and status",
+        "value": {
+          "name": "Operations & Facilities",
+          "description": "Updated segment description",
+          "status": "0"
         }
       }
     },
