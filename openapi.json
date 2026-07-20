@@ -3,7 +3,7 @@
   "info": {
     "title": "Acume Consumer API",
     "version": "0.1.0-beta",
-    "description": "Consumer-facing REST API for AP/AR automation (suppliers, GL codes, GL segments)."
+    "description": "Consumer-facing REST API for AP/AR automation (suppliers, GL codes, GL segments, inbound invoices)."
   },
   "servers": [
     {
@@ -2950,6 +2950,790 @@
         ]
       }
     },
+    "/v1/inbound-invoices": {
+      "get": {
+        "summary": "List inbound invoices",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "list"
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/InboundInvoiceSummary"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "has_more": {
+                          "type": "boolean"
+                        },
+                        "next_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "has_more"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data",
+                    "pagination"
+                  ]
+                },
+                "examples": {
+                  "summary": {
+                    "$ref": "#/components/examples/InboundInvoiceList"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, e.g. limit out of range or a malformed cursor (code: invalid_request).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_request": {
+                    "$ref": "#/components/examples/InvalidQueryParameter"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size (1-200, default 50)."
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque pagination cursor from the previous response."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "closed",
+                "declined",
+                "draft",
+                "export_review",
+                "failed",
+                "not_exported",
+                "open",
+                "pending",
+                "pending_approval",
+                "pending_coding",
+                "received",
+                "under_query"
+              ]
+            },
+            "description": "Filter by invoice status, or 'all' to disable filtering. Defaults to 'not_exported'."
+          },
+          {
+            "name": "ref_inv_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by the supplier's invoice number as shown on the source document."
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Filter by invoice creation date (YYYY-MM-DD)."
+          }
+        ]
+      }
+    },
+    "/v1/inbound-invoices/{inv_number}": {
+      "get": {
+        "summary": "Get an inbound invoice",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "inbound_invoice"
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/InboundInvoiceDetail"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "full": {
+                    "$ref": "#/components/examples/InboundInvoiceDetail"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/InboundInvoiceNotFound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inv_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/inbound-invoices/{inv_number}/open": {
+      "post": {
+        "summary": "Open an inbound invoice",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "inbound_invoice"
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/InboundInvoiceDetail"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "full": {
+                    "$ref": "#/components/examples/InboundInvoiceDetail"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_state": {
+                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/InboundInvoiceNotFound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inv_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/inbound-invoices/{inv_number}/close": {
+      "post": {
+        "summary": "Close an inbound invoice",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "inbound_invoice"
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/InboundInvoiceDetail"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "full": {
+                    "$ref": "#/components/examples/InboundInvoiceDetail"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_state": {
+                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/InboundInvoiceNotFound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inv_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/inbound-invoices/{inv_number}/decline": {
+      "post": {
+        "summary": "Decline an inbound invoice",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "inbound_invoice"
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/InboundInvoiceDetail"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "full": {
+                    "$ref": "#/components/examples/InboundInvoiceDetail"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalid_state": {
+                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (code: resource_not_found).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "resource_not_found": {
+                    "$ref": "#/components/examples/InboundInvoiceNotFound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inv_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
     "/v1/auth/token": {
       "post": {
         "summary": "Exchange an api_key for a JWT",
@@ -3156,7 +3940,7 @@
       "SupplierSummary": {
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "supplier_number": {
             "anyOf": [
               {
                 "type": "string"
@@ -3167,7 +3951,7 @@
             ],
             "default": null,
             "description": "Supplier number, used as the external identifier.",
-            "title": "Id"
+            "title": "Supplier Number"
           },
           "name": {
             "anyOf": [
@@ -4181,7 +4965,7 @@
       "SupplierDetail": {
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "supplier_number": {
             "anyOf": [
               {
                 "type": "string"
@@ -4192,7 +4976,7 @@
             ],
             "default": null,
             "description": "Supplier number, used as the external identifier.",
-            "title": "Id"
+            "title": "Supplier Number"
           },
           "name": {
             "anyOf": [
@@ -5689,6 +6473,743 @@
         "title": "UpdateGlSegmentInput",
         "type": "object"
       },
+      "InboundInvoiceSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Unique internal invoice identifier (UUID) for this inbound invoice.",
+            "title": "Inv Number"
+          },
+          "ref_inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice number as shown on the supplier's source document.",
+            "title": "Ref Inv Number"
+          },
+          "inv_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice date in ISO-8601 UTC format.",
+            "title": "Inv Date"
+          },
+          "seller_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Supplier identifier.",
+            "title": "Seller Id"
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Customer identifier.",
+            "title": "Customer Id"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount.",
+            "title": "Net Amount"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount.",
+            "title": "Tax Amount"
+          },
+          "tax_inclusive_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Total tax-inclusive amount.",
+            "title": "Tax Inclusive Amount"
+          },
+          "due_for_payment": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount due for payment.",
+            "title": "Due For Payment"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice status.",
+            "title": "Status"
+          },
+          "document_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Document type (e.g. 'invoice').",
+            "title": "Document Type"
+          },
+          "is_duplicate": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the invoice is flagged as a duplicate.",
+            "title": "Is Duplicate"
+          },
+          "inv_amount_matched": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount matched against PO/receipts.",
+            "title": "Inv Amount Matched"
+          },
+          "exported_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount already exported.",
+            "title": "Exported Amount"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Creation timestamp in ISO-8601 UTC format.",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
+            "title": "Updated At"
+          }
+        },
+        "title": "InboundInvoiceSummary",
+        "type": "object"
+      },
+      "InboundInvoiceApproval": {
+        "additionalProperties": false,
+        "properties": {
+          "approval_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Email of the approver.",
+            "title": "Approval Email"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Approval status.",
+            "title": "Status"
+          },
+          "approved_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Approval timestamp in ISO-8601 UTC format.",
+            "title": "Approved At"
+          }
+        },
+        "title": "InboundInvoiceApproval",
+        "type": "object"
+      },
+      "InboundInvoiceItem": {
+        "additionalProperties": false,
+        "properties": {
+          "line_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Line number within the invoice.",
+            "title": "Line Number"
+          },
+          "item_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Item name.",
+            "title": "Item Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Item description.",
+            "title": "Description"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Quantity as stored.",
+            "title": "Quantity"
+          },
+          "uom": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Unit of measure.",
+            "title": "Uom"
+          },
+          "item_net_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net price for one unit.",
+            "title": "Item Net Price"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount for the line.",
+            "title": "Net Amount"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount for the line.",
+            "title": "Tax Amount"
+          },
+          "total_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Total amount for the line.",
+            "title": "Total Amount"
+          },
+          "vat_rate": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "VAT/Tax rate label.",
+            "title": "Vat Rate"
+          }
+        },
+        "title": "InboundInvoiceItem",
+        "type": "object"
+      },
+      "InboundInvoiceNote": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Note text.",
+            "title": "Description"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Note creation timestamp in ISO-8601 UTC format.",
+            "title": "Created At"
+          }
+        },
+        "title": "InboundInvoiceNote",
+        "type": "object"
+      },
+      "InboundInvoicePurchaseOrder": {
+        "additionalProperties": false,
+        "properties": {
+          "purchase_order_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Purchase order number.",
+            "title": "Purchase Order Number"
+          },
+          "purchase_order_uuid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "External purchase order identifier.",
+            "title": "Purchase Order Uuid"
+          }
+        },
+        "title": "InboundInvoicePurchaseOrder",
+        "type": "object"
+      },
+      "InboundInvoiceDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Unique internal invoice identifier (UUID) for this inbound invoice.",
+            "title": "Inv Number"
+          },
+          "ref_inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice number as shown on the supplier's source document.",
+            "title": "Ref Inv Number"
+          },
+          "inv_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice date in ISO-8601 UTC format.",
+            "title": "Inv Date"
+          },
+          "seller_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Supplier identifier.",
+            "title": "Seller Id"
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Customer identifier.",
+            "title": "Customer Id"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount.",
+            "title": "Net Amount"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount.",
+            "title": "Tax Amount"
+          },
+          "tax_inclusive_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Total tax-inclusive amount.",
+            "title": "Tax Inclusive Amount"
+          },
+          "due_for_payment": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount due for payment.",
+            "title": "Due For Payment"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice status.",
+            "title": "Status"
+          },
+          "document_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Document type (e.g. 'invoice').",
+            "title": "Document Type"
+          },
+          "is_duplicate": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the invoice is flagged as a duplicate.",
+            "title": "Is Duplicate"
+          },
+          "inv_amount_matched": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount matched against PO/receipts.",
+            "title": "Inv Amount Matched"
+          },
+          "exported_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount already exported.",
+            "title": "Exported Amount"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Creation timestamp in ISO-8601 UTC format.",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
+            "title": "Updated At"
+          },
+          "freight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Freight amount.",
+            "title": "Freight"
+          },
+          "note_comments": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": false,
+            "description": "Whether the invoice has any notes.",
+            "title": "Note Comments"
+          },
+          "items": {
+            "description": "Invoice line items.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "approvals": {
+            "description": "Approval workflow entries.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceApproval"
+            },
+            "title": "Approvals",
+            "type": "array"
+          },
+          "purchase_orders": {
+            "description": "Linked purchase order numbers.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoicePurchaseOrder"
+            },
+            "title": "Purchase Orders",
+            "type": "array"
+          },
+          "notes": {
+            "description": "Invoice notes.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceNote"
+            },
+            "title": "Notes",
+            "type": "array"
+          }
+        },
+        "title": "InboundInvoiceDetail",
+        "type": "object"
+      },
       "AuthTokenRequest": {
         "type": "object",
         "properties": {
@@ -5966,6 +7487,30 @@
           }
         }
       },
+      "InboundInvoiceNotFound": {
+        "summary": "Inbound invoice not found",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "resource_not_found",
+            "message": "Inbound invoice 'INV-123' not found",
+            "request_id": "req_9d8f7a6b5c4e3d2f1a0b9c8d7e6f5a4b",
+            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+          }
+        }
+      },
+      "InboundInvoiceInvalidState": {
+        "summary": "Inbound invoice status transition not allowed",
+        "value": {
+          "error": {
+            "type": "invalid_request_error",
+            "code": "invalid_state",
+            "message": "Cannot open invoice 'INV-123' from status 'open'",
+            "request_id": "req_2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e",
+            "doc_url": "https://docs.acume.dev/errors#invalid_state"
+          }
+        }
+      },
       "CreateSupplierMinimal": {
         "summary": "Minimal required fields only",
         "value": {
@@ -6149,6 +7694,102 @@
           "name": "Operations & Facilities",
           "description": "Updated segment description",
           "status": "0"
+        }
+      },
+      "InboundInvoiceList": {
+        "summary": "List of inbound invoices",
+        "value": {
+          "object": "list",
+          "data": [
+            {
+              "inv_number": "14bd60a7-8ef9-4d9f-9401-8a0c27f36d91",
+              "ref_inv_number": "REF-1",
+              "inv_date": "2024-01-01T00:00:00Z",
+              "seller_id": "SUP-1",
+              "customer_id": 1,
+              "net_amount": 100.0,
+              "tax_amount": 15.0,
+              "tax_inclusive_amount": 115.0,
+              "due_for_payment": 115.0,
+              "status": "not_exported",
+              "document_type": "Invoice PO",
+              "is_duplicate": false,
+              "inv_amount_matched": 0.0,
+              "exported_amount": 0.0,
+              "created_at": "2024-01-01T00:00:00Z",
+              "updated_at": "2024-01-01T00:00:00Z"
+            }
+          ],
+          "pagination": {
+            "has_more": false,
+            "next_cursor": null
+          }
+        }
+      },
+      "InboundInvoiceDetail": {
+        "summary": "Full inbound invoice detail with child rows",
+        "value": {
+          "object": "inbound_invoice",
+          "data": {
+            "inv_number": "14bd60a7-8ef9-4d9f-9401-8a0c27f36d91",
+            "ref_inv_number": "REF-1",
+            "inv_date": "2024-01-01T00:00:00Z",
+            "seller_id": "SUP-1",
+            "customer_id": 1,
+            "net_amount": 100.0,
+            "tax_amount": 15.0,
+            "tax_inclusive_amount": 115.0,
+            "due_for_payment": 115.0,
+            "status": "open",
+            "document_type": "Invoice",
+            "is_duplicate": false,
+            "inv_amount_matched": 0.0,
+            "exported_amount": 0.0,
+            "freight": 0.0,
+            "note_comments": true,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
+            "items": [
+              {
+                "line_number": 1,
+                "item_name": "FREIGHT - Freight",
+                "description": null,
+                "quantity": "1",
+                "uom": "EA",
+                "item_net_price": 50.0,
+                "net_amount": 50.0,
+                "tax_amount": 7.5,
+                "total_amount": 57.5,
+                "vat_rate": "15%"
+              },
+              {
+                "line_number": 2,
+                "item_name": "Packaging & Handling",
+                "description": null,
+                "quantity": "1",
+                "uom": "EA",
+                "item_net_price": 50.0,
+                "net_amount": 50.0,
+                "tax_amount": 7.5,
+                "total_amount": 57.5,
+                "vat_rate": "15%"
+              }
+            ],
+            "approvals": [
+              {
+                "approval_email": "approver@example.com",
+                "status": "approved",
+                "approved_at": "2024-01-01T00:00:00Z"
+              }
+            ],
+            "purchase_orders": [],
+            "notes": [
+              {
+                "description": "Please process by Friday.",
+                "created_at": "2024-01-01T00:00:00Z"
+              }
+            ]
+          }
         }
       }
     },
