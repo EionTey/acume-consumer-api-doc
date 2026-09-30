@@ -220,6 +220,17 @@
                   ]
                 }
               }
+            },
+            "headers": {
+              "idempotent-replayed": {
+                "description": "'true' when this is the stored response to an earlier request with the same Idempotency-Key.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                }
+              }
             }
           },
           "401": {
@@ -283,7 +294,7 @@
             }
           },
           "400": {
-            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error). An Idempotency-Key outside 1-150 characters is code: invalid_request, with field: idempotency-key.",
             "content": {
               "application/json": {
                 "schema": {
@@ -334,6 +345,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "description": "Makes the POST safe to retry. The same key with the same body returns the original response (header `idempotent-replayed: true`) instead of creating a second record; the same key with a different body returns 422 idempotency_key_reused. Use a new value, e.g. a UUID, per operation."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -953,6 +977,17 @@
                   ]
                 }
               }
+            },
+            "headers": {
+              "idempotent-replayed": {
+                "description": "'true' when this is the stored response to an earlier request with the same Idempotency-Key.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                }
+              }
             }
           },
           "401": {
@@ -1016,7 +1051,7 @@
             }
           },
           "400": {
-            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error). An Idempotency-Key outside 1-150 characters is code: invalid_request, with field: idempotency-key.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1090,6 +1125,17 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "description": "Makes the POST safe to retry. The same key with the same body returns the original response (header `idempotent-replayed: true`) instead of creating a second record; the same key with a different body returns 422 idempotency_key_reused. Use a new value, e.g. a UUID, per operation."
           }
         ],
         "requestBody": {
@@ -1726,6 +1772,17 @@
                   ]
                 }
               }
+            },
+            "headers": {
+              "idempotent-replayed": {
+                "description": "'true' when this is the stored response to an earlier request with the same Idempotency-Key.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                }
+              }
             }
           },
           "401": {
@@ -1789,7 +1846,7 @@
             }
           },
           "400": {
-            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error). An Idempotency-Key outside 1-150 characters is code: invalid_request, with field: idempotency-key.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1840,6 +1897,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "description": "Makes the POST safe to retry. The same key with the same body returns the original response (header `idempotent-replayed: true`) instead of creating a second record; the same key with a different body returns 422 idempotency_key_reused. Use a new value, e.g. a UUID, per operation."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2443,6 +2513,17 @@
                   ]
                 }
               }
+            },
+            "headers": {
+              "idempotent-replayed": {
+                "description": "'true' when this is the stored response to an earlier request with the same Idempotency-Key.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                }
+              }
             }
           },
           "401": {
@@ -2506,7 +2587,7 @@
             }
           },
           "400": {
-            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error).",
+            "description": "Malformed JSON body (code: malformed_json), or the body failed schema validation (code: validation_error). An Idempotency-Key outside 1-150 characters is code: invalid_request, with field: idempotency-key.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2557,6 +2638,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "description": "Makes the POST safe to retry. The same key with the same body returns the original response (header `idempotent-replayed: true`) instead of creating a second record; the same key with a different body returns 422 idempotency_key_reused. Use a new value, e.g. a UUID, per operation."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2951,6 +3045,246 @@
       }
     },
     "/v1/inbound-invoices": {
+      "post": {
+        "summary": "Create an inbound invoice",
+        "tags": [
+          "Inbound Invoices"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "enum": [
+                        "inbound_invoice"
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/InboundInvoiceDetail"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "created": {
+                    "$ref": "#/components/examples/CreatedInboundInvoice"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "idempotent-replayed": {
+                "description": "'true' when this is the stored response to an earlier request with the same Idempotency-Key.",
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/GatewayUnauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "rate_limit_exceeded": {
+                    "$ref": "#/components/examples/RateLimitExceeded"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error (code: internal_error), or the invoice was created but the response could not be returned (code: created_response_unavailable). For the latter, retry with the same Idempotency-Key to receive the 201, or GET the invoice named in the message.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "internal_error": {
+                    "$ref": "#/components/examples/InternalError"
+                  },
+                  "created_response_unavailable": {
+                    "$ref": "#/components/examples/CreatedResponseUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "service_unavailable": {
+                    "$ref": "#/components/examples/ServiceUnavailable"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON body (code: malformed_json), or the body failed validation (code: validation_error, with one `details` entry per field). Rarely, a body is rejected without a per-field breakdown (code: invalid_request, reason in `message`). An Idempotency-Key outside 1-150 characters is also code: invalid_request, with field: idempotency-key. Fix the request; the same Idempotency-Key may be reused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "malformed_json": {
+                    "$ref": "#/components/examples/MalformedJson"
+                  },
+                  "validation_error": {
+                    "$ref": "#/components/examples/ValidationError"
+                  },
+                  "invalid_request": {
+                    "$ref": "#/components/examples/UpstreamInvalidRequest"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The account is inactive and cannot create inbound invoices. Retrying will not help (code: forbidden).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "forbidden": {
+                    "$ref": "#/components/examples/AccountForbidden"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A request with this Idempotency-Key has not finished yet, including after a 504 (code: idempotency_in_progress). Wait retry_after seconds, then retry with the same key and body. If it keeps returning 409, check GET /v1/inbound-invoices?ref_inv_number=<ref>&status=all before sending the invoice under a new key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_in_progress": {
+                    "$ref": "#/components/examples/IdempotencyInProgress"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Idempotency-Key was already used with a different request payload (code: idempotency_key_reused).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "idempotency_key_reused": {
+                    "$ref": "#/components/examples/IdempotencyKeyReused"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The invoice could not be processed. This is not caused by the request body (code: upstream_error). Wait retry_after seconds and retry with the same Idempotency-Key and body; if an earlier attempt did create the invoice, the retry returns it instead of creating another.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "upstream_error": {
+                    "$ref": "#/components/examples/UpstreamError"
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "The outcome could not be confirmed, so the invoice may or may not have been created (code: upstream_outcome_unknown). Retry with the same Idempotency-Key and body; do not switch to a new key. The retry returns 409 idempotency_in_progress until the outcome is known, then the invoice as a replayed 201 if it was created. If it keeps returning 409, check GET /v1/inbound-invoices?ref_inv_number=<ref>&status=all before sending it under a new key. Without a key, check with that GET before resending.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "upstream_outcome_unknown": {
+                    "$ref": "#/components/examples/UpstreamOutcomeUnknown"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Creates a supplier invoice. It is created with status 'received' and then goes through your coding, purchase-order matching and approval rules, so the status in the response may already have moved on.\n\n**Provisional.** The request fields may still change.\n\nThe supplier is identified from `bank_account_number`, `tax_reg_no` and `legal_registration_identifier`. All three are optional; when none matches a supplier, the invoice is still created, with `supplier_number: null`.\n\n`document_type` is 'Invoice' or 'Credit Note'. Whether the invoice is matched against purchase orders depends on your configuration, and the created invoice's `document_type` shows the result ('Invoice PO', 'Credit Note PO').\n\nLine tax is calculated from the supplier's tax rate, so line-level tax fields are not accepted. Line amounts are not reconciled against the header totals. A possible duplicate is created and flagged with `is_duplicate`, not rejected.\n\nSend an `Idempotency-Key`. If the response is lost, or is a 409, 429 or 5xx, retry with the **same** key and body: one key never creates more than one invoice, and after a `504` or `500 created_response_unavailable` the retry is how you receive the invoice. Only if a retry keeps returning `409 idempotency_in_progress`, check `GET /v1/inbound-invoices?ref_inv_number=<ref>&status=all` before sending it under a new key. Without a key, check with that GET before resending anything.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "description": "Makes the POST safe to retry. The same key with the same body returns the original response (header `idempotent-replayed: true`) instead of creating a second record; the same key with a different body returns 422 idempotency_key_reused. Use a new value, e.g. a UUID, per operation."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInboundInvoiceInput"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateInboundInvoiceMinimal"
+                },
+                "full": {
+                  "$ref": "#/components/examples/CreateInboundInvoiceFull"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "summary": "List inbound invoices",
         "tags": [
@@ -3108,21 +3442,19 @@
               "type": "string",
               "enum": [
                 "all",
-                "closed",
-                "declined",
-                "draft",
+                "received",
+                "pending_approval",
+                "under_query",
                 "export_review",
-                "failed",
                 "not_exported",
                 "open",
-                "pending",
-                "pending_approval",
-                "pending_coding",
-                "received",
-                "under_query"
+                "closed",
+                "declined",
+                "reconciled",
+                "pending"
               ]
             },
-            "description": "Filter by invoice status, or 'all' to disable filtering. Defaults to 'not_exported'."
+            "description": "Filter by invoice status, or 'all' to disable filtering. Defaults to 'not_exported', so a newly created invoice (status 'received') is listed only with status=received or all."
           },
           {
             "name": "ref_inv_number",
@@ -3133,6 +3465,20 @@
             "description": "Filter by the supplier's invoice number as shown on the source document."
           },
           {
+            "name": "document_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Invoice",
+                "Invoice PO",
+                "Credit Note",
+                "Credit Note PO"
+              ]
+            },
+            "description": "Filter by inbound invoice document type, as returned in `document_type`."
+          },
+          {
             "name": "created_at",
             "in": "query",
             "schema": {
@@ -3140,6 +3486,15 @@
               "format": "date"
             },
             "description": "Filter by invoice creation date (YYYY-MM-DD)."
+          },
+          {
+            "name": "updated_at[gte]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only rows updated at or after this ISO-8601 timestamp."
           }
         ]
       }
@@ -3176,131 +3531,9 @@
                 "examples": {
                   "full": {
                     "$ref": "#/components/examples/InboundInvoiceDetail"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
-                },
-                "examples": {
-                  "unauthorized": {
-                    "$ref": "#/components/examples/GatewayUnauthorized"
-                  }
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "rate_limit_exceeded": {
-                    "$ref": "#/components/examples/RateLimitExceeded"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error (code: internal_error).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "internal_error": {
-                    "$ref": "#/components/examples/InternalError"
-                  }
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "service_unavailable": {
-                    "$ref": "#/components/examples/ServiceUnavailable"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found (code: resource_not_found).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "resource_not_found": {
-                    "$ref": "#/components/examples/InboundInvoiceNotFound"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "inv_number",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/inbound-invoices/{inv_number}/open": {
-      "post": {
-        "summary": "Open an inbound invoice",
-        "tags": [
-          "Inbound Invoices"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "enum": [
-                        "inbound_invoice"
-                      ]
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/InboundInvoiceDetail"
-                    }
                   },
-                  "required": [
-                    "object",
-                    "data"
-                  ]
-                },
-                "examples": {
-                  "full": {
-                    "$ref": "#/components/examples/InboundInvoiceDetail"
+                  "po": {
+                    "$ref": "#/components/examples/InboundInvoicePoDetail"
                   }
                 }
               }
@@ -3361,346 +3594,6 @@
                 "examples": {
                   "service_unavailable": {
                     "$ref": "#/components/examples/ServiceUnavailable"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Malformed JSON body (code: malformed_json).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "malformed_json": {
-                    "$ref": "#/components/examples/MalformedJson"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "invalid_state": {
-                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found (code: resource_not_found).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "resource_not_found": {
-                    "$ref": "#/components/examples/InboundInvoiceNotFound"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "inv_number",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/inbound-invoices/{inv_number}/close": {
-      "post": {
-        "summary": "Close an inbound invoice",
-        "tags": [
-          "Inbound Invoices"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "enum": [
-                        "inbound_invoice"
-                      ]
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/InboundInvoiceDetail"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "data"
-                  ]
-                },
-                "examples": {
-                  "full": {
-                    "$ref": "#/components/examples/InboundInvoiceDetail"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
-                },
-                "examples": {
-                  "unauthorized": {
-                    "$ref": "#/components/examples/GatewayUnauthorized"
-                  }
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "rate_limit_exceeded": {
-                    "$ref": "#/components/examples/RateLimitExceeded"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error (code: internal_error).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "internal_error": {
-                    "$ref": "#/components/examples/InternalError"
-                  }
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "service_unavailable": {
-                    "$ref": "#/components/examples/ServiceUnavailable"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Malformed JSON body (code: malformed_json).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "malformed_json": {
-                    "$ref": "#/components/examples/MalformedJson"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "invalid_state": {
-                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found (code: resource_not_found).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "resource_not_found": {
-                    "$ref": "#/components/examples/InboundInvoiceNotFound"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "inv_number",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/inbound-invoices/{inv_number}/decline": {
-      "post": {
-        "summary": "Decline an inbound invoice",
-        "tags": [
-          "Inbound Invoices"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "enum": [
-                        "inbound_invoice"
-                      ]
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/InboundInvoiceDetail"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "data"
-                  ]
-                },
-                "examples": {
-                  "full": {
-                    "$ref": "#/components/examples/InboundInvoiceDetail"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid bearer token. This is API Gateway's own built-in Unauthorized response -- the TOKEN Lambda authorizer denies the request before it ever reaches the application, so the body is NOT the app's usual {\"error\": {...}} envelope.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GatewayUnauthorizedError"
-                },
-                "examples": {
-                  "unauthorized": {
-                    "$ref": "#/components/examples/GatewayUnauthorized"
-                  }
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests -- see Retry-After header (type: rate_limit_error, code: rate_limit_exceeded).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "rate_limit_exceeded": {
-                    "$ref": "#/components/examples/RateLimitExceeded"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error (code: internal_error).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "internal_error": {
-                    "$ref": "#/components/examples/InternalError"
-                  }
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Temporarily unavailable -- see Retry-After header (code: service_unavailable).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "service_unavailable": {
-                    "$ref": "#/components/examples/ServiceUnavailable"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Malformed JSON body (code: malformed_json).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "malformed_json": {
-                    "$ref": "#/components/examples/MalformedJson"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Requested status transition is not allowed from the invoice's current state (code: invalid_state).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "invalid_state": {
-                    "$ref": "#/components/examples/InboundInvoiceInvalidState"
                   }
                 }
               }
@@ -3823,8 +3716,7 @@
               "type",
               "code",
               "message",
-              "request_id",
-              "doc_url"
+              "request_id"
             ],
             "properties": {
               "type": {
@@ -3858,6 +3750,9 @@
                   "malformed_json",
                   "idempotency_key_reused",
                   "idempotency_in_progress",
+                  "upstream_error",
+                  "upstream_outcome_unknown",
+                  "created_response_unavailable",
                   "invalid_api_key"
                 ]
               },
@@ -3908,7 +3803,7 @@
               },
               "retry_after": {
                 "type": "integer",
-                "description": "Seconds to wait before retrying. Present on 429/503 only; also echoed in the Retry-After header."
+                "description": "Seconds to wait before retrying. Present on 409 idempotency_in_progress, 429, 502 and 503; also echoed in the Retry-After header."
               },
               "request_id": {
                 "type": "string",
@@ -3916,7 +3811,7 @@
               },
               "doc_url": {
                 "type": "string",
-                "description": "Link to the docs page for this specific `code`."
+                "description": "Link to the docs page for this specific `code`. Not currently returned."
               }
             }
           }
@@ -4149,8 +4044,8 @@
         "additionalProperties": false,
         "properties": {
           "account_number": {
-            "description": "Bank account number. Letters and digits only. Spaces and hyphens are accepted but stripped before storage (e.g. '12-3456 7890' becomes '1234567890').",
-            "maxLength": 255,
+            "description": "Bank account number. Letters and digits only. Spaces and hyphens are accepted but stripped before storage (e.g. '12-3456 7890' becomes '1234567890'). The stripped value must be at most 34 characters -- the ISO 13616 maximum IBAN length, which accommodates every national account number format.",
+            "maxLength": 64,
             "minLength": 1,
             "title": "Account Number",
             "type": "string"
@@ -4175,11 +4070,24 @@
         "title": "BankAccountInput",
         "type": "object"
       },
+      "TaxCategory": {
+        "description": "Closed vocabulary of supplier tax categories.",
+        "enum": [
+          "C",
+          "E",
+          "G",
+          "O",
+          "S",
+          "Z"
+        ],
+        "title": "TaxCategory",
+        "type": "string"
+      },
       "CreateSupplierInput": {
         "additionalProperties": false,
         "properties": {
           "supplier_number": {
-            "description": "Unique supplier identifier, set at creation and immutable thereafter (not present on UpdateSupplierInput).",
+            "description": "Unique supplier identifier, set at creation and immutable thereafter (not present on UpdateSupplierInput). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ). '/' is rejected because this value is used as a URL path segment. Other characters, including HTML tags and control characters, are rejected.",
             "maxLength": 255,
             "minLength": 1,
             "title": "Supplier Number",
@@ -4194,12 +4102,13 @@
           },
           "country": {
             "description": "ISO 3166-1 alpha-2 country code (e.g. NZ, AU). Case-insensitive; normalized to uppercase. Only NZ and AU are saved, other country codes are discarded.",
-            "minLength": 1,
+            "maxLength": 255,
             "title": "Country",
             "type": "string"
           },
           "currency": {
             "description": "ISO 4217 3-letter alphabetic currency code (e.g. NZD, AUD, USD).",
+            "maxLength": 10,
             "pattern": "^[A-Za-z]{3}$",
             "title": "Currency",
             "type": "string"
@@ -4220,18 +4129,9 @@
             "title": "Full Formal Name"
           },
           "tax_category": {
+            "$ref": "#/components/schemas/TaxCategory",
             "default": "S",
-            "description": "Tax category code. Defaults to 'S' (standard).",
-            "enum": [
-              "C",
-              "E",
-              "G",
-              "O",
-              "S",
-              "Z"
-            ],
-            "title": "Tax Category",
-            "type": "string"
+            "description": "Tax category code. Defaults to 'S' (standard)."
           },
           "tax_rate": {
             "description": "Case-insensitive; '%' suffix optional for numeric values (e.g. '10' matches '10%').\n\nAllowed values by tax_category:\n\n| tax_category | Allowed tax_rate |\n|---|---|\n| S (Standard) | `15%`, `12%`, `10%` |\n| E (Exempt) | `No Tax` |\n| Z (Zero-rated) | `0%` |\n| C | `10%` |\n| G | `No Tax` |\n| O | `No Tax` |\n",
@@ -4333,17 +4233,14 @@
             "title": "Supplier Alt Id"
           },
           "status": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
             "default": "1",
-            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
-            "title": "Status"
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted. Not nullable.",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "title": "Status",
+            "type": "string"
           },
           "address": {
             "anyOf": [
@@ -4363,6 +4260,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BankAccountInput"
                 },
+                "maxItems": 20,
                 "type": "array"
               },
               {
@@ -4370,7 +4268,7 @@
               }
             ],
             "default": null,
-            "description": "Bank accounts to create for this supplier.",
+            "description": "Bank accounts to create for this supplier. A supplier may have at most 20 bank accounts in total; there is no separate endpoint to add more later -- see bank_accounts on UpdateSupplierInput to change this set after creation.",
             "title": "Bank Accounts"
           }
         },
@@ -5254,7 +5152,7 @@
           "country": {
             "anyOf": [
               {
-                "minLength": 1,
+                "maxLength": 255,
                 "type": "string"
               },
               {
@@ -5265,39 +5163,17 @@
             "description": "ISO 3166-1 alpha-2 country code (e.g. NZ, AU). Case-insensitive; normalized to uppercase.",
             "title": "Country"
           },
-          "status": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
-            "title": "Status"
-          },
           "tax_category": {
             "anyOf": [
               {
-                "enum": [
-                  "C",
-                  "E",
-                  "G",
-                  "O",
-                  "S",
-                  "Z"
-                ],
-                "type": "string"
+                "$ref": "#/components/schemas/TaxCategory"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
-            "description": "Tax category code.",
-            "title": "Tax Category"
+            "description": "Tax category code."
           },
           "tax_rate": {
             "anyOf": [
@@ -5317,6 +5193,7 @@
           "currency": {
             "anyOf": [
               {
+                "maxLength": 10,
                 "type": "string"
               },
               {
@@ -5438,6 +5315,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BankAccountInput"
                 },
+                "maxItems": 20,
                 "type": "array"
               },
               {
@@ -5445,7 +5323,7 @@
               }
             ],
             "default": null,
-            "description": "Full replacement of this supplier's bank accounts. If provided, the entire existing set is replaced \u2014 this is not a merge or append. Omit this field entirely to leave existing bank accounts unchanged. Submit an empty list ([]) or null to remove all bank accounts. ",
+            "description": "Full replacement of this supplier's bank accounts. If provided, the entire existing set is replaced \u2014 this is not a merge or append, so the submitted list is also the supplier's new total count and may contain at most 20 accounts. Omit this field entirely to leave existing bank accounts unchanged. Submit an empty list ([]) or null to remove all bank accounts. ",
             "title": "Bank Accounts"
           }
         },
@@ -5825,21 +5703,6 @@
             "title": "Type",
             "type": "string"
           },
-          "alt_id": {
-            "anyOf": [
-              {
-                "maxLength": 100,
-                "minLength": 1,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Alternative identifier for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
-            "title": "Alt Id"
-          },
           "description": {
             "anyOf": [
               {
@@ -5856,21 +5719,14 @@
             "title": "Description"
           },
           "status": {
-            "anyOf": [
-              {
-                "enum": [
-                  "0",
-                  "1"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
             "default": "1",
-            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
-            "title": "Status"
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted. Not nullable.",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "title": "Status",
+            "type": "string"
           }
         },
         "required": [
@@ -6041,21 +5897,6 @@
             "description": "GL code type or category (e.g. 'expense', 'revenue', 'asset'). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Type"
           },
-          "alt_id": {
-            "anyOf": [
-              {
-                "maxLength": 100,
-                "minLength": 1,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Alternative identifier for the GL code. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
-            "title": "Alt Id"
-          },
           "description": {
             "anyOf": [
               {
@@ -6070,23 +5911,6 @@
             "default": null,
             "description": "Longer free-text description of the GL code's purpose. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Description"
-          },
-          "status": {
-            "anyOf": [
-              {
-                "enum": [
-                  "0",
-                  "1"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
-            "title": "Status"
           }
         },
         "title": "UpdateGlCodeInput",
@@ -6264,21 +6088,14 @@
             "title": "Is Default"
           },
           "status": {
-            "anyOf": [
-              {
-                "enum": [
-                  "0",
-                  "1"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
             "default": "1",
-            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted.",
-            "title": "Status"
+            "description": "Status code. '1' for active, '0' for inactive. Defaults to '1' if omitted. Not nullable.",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "title": "Status",
+            "type": "string"
           }
         },
         "required": [
@@ -6407,7 +6224,7 @@
       },
       "UpdateGlSegmentInput": {
         "additionalProperties": false,
-        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\n`level` and `alt_id` cannot be changed after creation and are intentionally not\nsettable here.",
+        "description": "Partial update. Only fields explicitly provided are applied (model_dump(exclude_unset=True)).\n\n`level` cannot be changed after creation and is intentionally not settable here.",
         "properties": {
           "name": {
             "anyOf": [
@@ -6423,6 +6240,21 @@
             "default": null,
             "description": "Display name for the GL segment. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
             "title": "Name"
+          },
+          "alt_id": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Alternative identifier for the GL segment, typically a UUID (max 36 characters). Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Alt Id"
           },
           "description": {
             "anyOf": [
@@ -6451,86 +6283,28 @@
             "default": null,
             "description": "Whether this is the default segment for its level. Omit to leave unchanged.",
             "title": "Is Default"
-          },
-          "status": {
-            "anyOf": [
-              {
-                "enum": [
-                  "0",
-                  "1"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Status code. '1' for active, '0' for inactive. Omit to leave unchanged.",
-            "title": "Status"
           }
         },
         "title": "UpdateGlSegmentInput",
         "type": "object"
       },
-      "InboundInvoiceSummary": {
+      "InboundInvoiceCreateDocumentType": {
+        "description": "What a caller may declare on create. PO is decided by client and supplier\nconfiguration in the platform, never by the caller.",
+        "enum": [
+          "Invoice",
+          "Credit Note"
+        ],
+        "title": "InboundInvoiceCreateDocumentType",
+        "type": "string"
+      },
+      "InboundInvoiceItemInput": {
         "additionalProperties": false,
+        "description": "One invoice line.\n\nOnly `net_amount` is required. Everything else is optional because the platform's\nintake adapter treats it as optional and OCR-sourced invoices routinely arrive with\nsparse lines.\n\nLine-level `vat_rate`, `tax_amount`, `invoiced_item_vat_category_code` and\n`tax_scheme` are not accepted here: the platform stamps them from the resolved\nsupplier and recalculates line tax from the net amount and that rate, so a caller's\nvalue would never survive persistence. They are rejected as unknown fields rather\nthan silently dropped, so a caller who believes it is setting line tax is told.",
         "properties": {
-          "inv_number": {
+          "line_number": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Unique internal invoice identifier (UUID) for this inbound invoice.",
-            "title": "Inv Number"
-          },
-          "ref_inv_number": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Invoice number as shown on the supplier's source document.",
-            "title": "Ref Inv Number"
-          },
-          "inv_date": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Invoice date in ISO-8601 UTC format.",
-            "title": "Inv Date"
-          },
-          "seller_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Supplier identifier.",
-            "title": "Seller Id"
-          },
-          "customer_id": {
-            "anyOf": [
-              {
+                "minimum": 1,
                 "type": "integer"
               },
               {
@@ -6538,64 +6312,243 @@
               }
             ],
             "default": null,
-            "description": "Customer identifier.",
-            "title": "Customer Id"
+            "description": "Line number within the invoice. Defaults to the item's 1-based position in `items` if omitted.",
+            "title": "Line Number"
           },
-          "net_amount": {
+          "item_name": {
             "anyOf": [
               {
-                "type": "number"
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
-            "description": "Net amount.",
+            "description": "Item name. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Item Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Item description. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Description"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Quantity, as a numeric string. Stored verbatim.",
+            "title": "Quantity"
+          },
+          "uom": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Unit of measure. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Uom"
+          },
+          "item_net_price": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,20}0*$)\\d{0,15}\\.\\d{0,4}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net price for one unit.",
+            "title": "Item Net Price"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,20}0*$)\\d{0,15}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "description": "Net amount for the line. Required.",
+            "title": "Net Amount"
+          },
+          "total_amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,20}0*$)\\d{0,15}\\.\\d{0,4}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Gross (tax-inclusive) amount for the line.",
+            "title": "Total Amount"
+          }
+        },
+        "required": [
+          "net_amount"
+        ],
+        "title": "InboundInvoiceItemInput",
+        "type": "object"
+      },
+      "CreateInboundInvoiceInput": {
+        "additionalProperties": false,
+        "description": "A supplier invoice submitted for intake into the platform.\n\nThis API validates and forwards the request to the einvoicing platform's shared\nintake service. The field names, casing and rules below mirror\n`App\\Http\\Requests\\ConsumerApiInboundInvoiceRequest` and\n`App\\Services\\Intake\\Adapters\\ConsumerApiIntakeAdapter`; see\ndocs/design/phase-2/inbound-invoice-create-contract.md for what is still open.\n\nSupplier identification is by evidence, not by identifier. The platform resolves the\nsupplier through OCR's own matchers so that ownership and active-status checks happen\nonce for every origin, and those matchers take the bank account number, tax\nregistration number and legal registration identifier printed on the invoice. All three are optional and none has to resolve: a\nhandwritten docket carries none of them, and the platform creates the invoice\nunresolved rather than refusing it. `seller_id` and `supplier_number` are still\nrejected: the platform marks `seller_id` `missing`, so accepting either here would\nproduce a downstream 422 or be ignored.\n\nTwo things this schema deliberately does not do:\n\nHeader/line reconciliation. An earlier draft summed the line amounts and rejected the\nrequest when they missed the header totals by more than 0.01. That rule cannot be\nhonoured: the platform recalculates each line's tax from its net amount and the VAT\nrate rather than storing what was sent, so an invoice that passed the check would\nstill be stored with different line tax than the caller supplied. Rejecting requests\nagainst a rule the persistence layer then overrides is worse than not checking.\n\nSupplier existence, duplicate identity and coding validity. All resolved downstream,\nonce, for every origin. `branch` and `department` follow the same rule: this schema\nchecks their shape only, and the platform resolves them through OCR's segment\ncascade, which falls back to supplier and client defaults rather than failing when an\nidentifier does not resolve.\n\nTenancy is not a field. The client is taken from the authenticated caller, never from\nthe body, and travels to the platform in a header.",
+        "properties": {
+          "ref_inv_number": {
+            "description": "Invoice number from the supplier's own document. Not guaranteed unique: duplicate detection is configurable per client and runs in the platform, which may flag the created invoice rather than reject it. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Ref Inv Number",
+            "type": "string"
+          },
+          "inv_date": {
+            "description": "Invoice date, as an ISO-8601 calendar date (YYYY-MM-DD).",
+            "format": "date",
+            "title": "Inv Date",
+            "type": "string"
+          },
+          "bank_account_number": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Supplier bank account number as printed on the invoice, used to resolve the supplier. Optional. Separators are preserved here and normalised by the platform. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Bank Account Number"
+          },
+          "tax_reg_no": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Supplier tax registration number (e.g. GST number) as printed on the invoice, used to resolve the supplier. The same field as on the supplier resource. Optional. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Tax Reg No"
+          },
+          "legal_registration_identifier": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Supplier legal registration identifier (NZBN or ABN) as printed on the invoice, used to resolve the supplier when the bank account number and tax registration number do not. The same field as on the supplier resource. Optional. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Legal Registration Identifier"
+          },
+          "document_type": {
+            "$ref": "#/components/schemas/InboundInvoiceCreateDocumentType",
+            "default": "Invoice",
+            "description": "'Invoice' or 'Credit Note'. Defaults to 'Invoice'. The exact casing shown is significant. The PO types are not accepted: whether a document is matched against purchase orders is decided by the client's and supplier's configuration, and the result is returned as `document_type` on the created invoice."
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,18}0*$)\\d{0,15}\\.\\d{0,2}0*$)",
+                "type": "string"
+              }
+            ],
+            "description": "Header net (tax-exclusive) amount, at most 2 decimal places. Required.",
             "title": "Net Amount"
           },
           "tax_amount": {
             "anyOf": [
               {
+                "minimum": 0.0,
                 "type": "number"
               },
               {
-                "type": "null"
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,18}0*$)\\d{0,15}\\.\\d{0,2}0*$)",
+                "type": "string"
               }
             ],
-            "default": null,
-            "description": "Tax amount.",
+            "description": "Header tax amount, at most 2 decimal places. Required.",
             "title": "Tax Amount"
           },
           "tax_inclusive_amount": {
             "anyOf": [
               {
+                "minimum": 0.0,
                 "type": "number"
               },
               {
-                "type": "null"
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,18}0*$)\\d{0,15}\\.\\d{0,2}0*$)",
+                "type": "string"
               }
             ],
-            "default": null,
-            "description": "Total tax-inclusive amount.",
+            "description": "Header gross (tax-inclusive) amount, at most 2 decimal places. Required.",
             "title": "Tax Inclusive Amount"
           },
-          "due_for_payment": {
+          "freight": {
             "anyOf": [
               {
+                "minimum": 0.0,
                 "type": "number"
               },
               {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Amount due for payment.",
-            "title": "Due For Payment"
-          },
-          "status": {
-            "anyOf": [
-              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,18}0*$)\\d{0,15}\\.\\d{0,2}0*$)",
                 "type": "string"
               },
               {
@@ -6603,64 +6556,17 @@
               }
             ],
             "default": null,
-            "description": "Invoice status.",
-            "title": "Status"
+            "description": "Freight amount, at most 2 decimal places.",
+            "title": "Freight"
           },
-          "document_type": {
+          "surcharge": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Document type (e.g. 'invoice').",
-            "title": "Document Type"
-          },
-          "is_duplicate": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Whether the invoice is flagged as a duplicate.",
-            "title": "Is Duplicate"
-          },
-          "inv_amount_matched": {
-            "anyOf": [
-              {
+                "minimum": 0.0,
                 "type": "number"
               },
               {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Amount matched against PO/receipts.",
-            "title": "Inv Amount Matched"
-          },
-          "exported_amount": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Amount already exported.",
-            "title": "Exported Amount"
-          },
-          "created_at": {
-            "anyOf": [
-              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,15}|(?=[\\d.]{1,18}0*$)\\d{0,15}\\.\\d{0,2}0*$)",
                 "type": "string"
               },
               {
@@ -6668,12 +6574,13 @@
               }
             ],
             "default": null,
-            "description": "Creation timestamp in ISO-8601 UTC format.",
-            "title": "Created At"
+            "description": "Surcharge amount, at most 2 decimal places.",
+            "title": "Surcharge"
           },
-          "updated_at": {
+          "due_date": {
             "anyOf": [
               {
+                "format": "date",
                 "type": "string"
               },
               {
@@ -6681,11 +6588,76 @@
               }
             ],
             "default": null,
-            "description": "Last updated timestamp in ISO-8601 UTC format.",
-            "title": "Updated At"
+            "description": "Payment due date, as an ISO-8601 calendar date (YYYY-MM-DD). Omit to let the platform derive it from the supplier's payment terms.",
+            "title": "Due Date"
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Branch to address the document to, as the segment's alternate id or name (e.g. '122'), the same token an OCR sender embeds in the intake mailbox address. Optional; omit to let the platform apply supplier and client defaults. A value that does not match one of the client's branches falls back to those same defaults rather than failing the request. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Branch"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Department to address the document to, as the segment's alternate id or name (e.g. '3112'). Optional; when only `branch` is supplied the client's default department is applied. A value that does not match one of the client's departments, or is not linked to `branch`, falls back to those defaults rather than failing the request. Accepts letters (any language), numbers, spaces, and - . , ' \" & ( ) /. Other characters, including HTML tags and control characters, are rejected.",
+            "title": "Department"
+          },
+          "purchase_order_numbers": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Purchase order numbers to associate with this invoice. Blank entries are discarded. Matching invoice lines to purchase order lines happens in the platform.",
+            "title": "Purchase Order Numbers"
+          },
+          "items": {
+            "description": "Invoice line items. At least one is required.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceItemInput"
+            },
+            "maxItems": 1000,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
           }
         },
-        "title": "InboundInvoiceSummary",
+        "required": [
+          "ref_inv_number",
+          "inv_date",
+          "net_amount",
+          "tax_amount",
+          "tax_inclusive_amount",
+          "items"
+        ],
+        "title": "CreateInboundInvoiceInput",
         "type": "object"
       },
       "InboundInvoiceApproval": {
@@ -6732,6 +6704,250 @@
           }
         },
         "title": "InboundInvoiceApproval",
+        "type": "object"
+      },
+      "InboundInvoiceHeaderCoding": {
+        "additionalProperties": false,
+        "properties": {
+          "line_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding line number within the invoice.",
+            "title": "Line Number"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding description.",
+            "title": "Description"
+          },
+          "gl_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "GL code.",
+            "title": "Gl Code"
+          },
+          "gl_code_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "GL code description.",
+            "title": "Gl Code Description"
+          },
+          "project_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Project code.",
+            "title": "Project Code"
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Branch coding.",
+            "title": "Branch"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Department coding.",
+            "title": "Department"
+          },
+          "suffix_1": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 1.",
+            "title": "Suffix 1"
+          },
+          "suffix_2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 2.",
+            "title": "Suffix 2"
+          },
+          "suffix_3": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 3.",
+            "title": "Suffix 3"
+          },
+          "suffix_4": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 4.",
+            "title": "Suffix 4"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount for this coding line.",
+            "title": "Net Amount"
+          },
+          "tax_rate": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax rate.",
+            "title": "Tax Rate"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount for this coding line.",
+            "title": "Tax Amount"
+          },
+          "total_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Gross amount for this coding line.",
+            "title": "Total Amount"
+          },
+          "tax_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax category code (e.g. 'S').",
+            "title": "Tax Category"
+          },
+          "allocation_percentage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Percentage allocated to this coding line.",
+            "title": "Allocation Percentage"
+          },
+          "item_category_code": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Item category code path.",
+            "title": "Item Category Code"
+          }
+        },
+        "title": "InboundInvoiceHeaderCoding",
         "type": "object"
       },
       "InboundInvoiceItem": {
@@ -6838,7 +7054,7 @@
               }
             ],
             "default": null,
-            "description": "Tax amount for the line.",
+            "description": "Tax amount for the line. Recalculated by the platform from `net_amount` and `tax_rate`, so it can differ from what the caller implied.",
             "title": "Tax Amount"
           },
           "total_amount": {
@@ -6854,7 +7070,7 @@
             "description": "Total amount for the line.",
             "title": "Total Amount"
           },
-          "vat_rate": {
+          "tax_rate": {
             "anyOf": [
               {
                 "type": "string"
@@ -6864,11 +7080,349 @@
               }
             ],
             "default": null,
-            "description": "VAT/Tax rate label.",
-            "title": "Vat Rate"
+            "description": "Tax rate label taken from the supplier (e.g. '15%').",
+            "title": "Tax Rate"
           }
         },
         "title": "InboundInvoiceItem",
+        "type": "object"
+      },
+      "InboundInvoiceLineCoding": {
+        "additionalProperties": false,
+        "properties": {
+          "line_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding line number within the invoice.",
+            "title": "Line Number"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding description.",
+            "title": "Description"
+          },
+          "gl_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "GL code.",
+            "title": "Gl Code"
+          },
+          "gl_code_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "GL code description.",
+            "title": "Gl Code Description"
+          },
+          "project_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Project code.",
+            "title": "Project Code"
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Branch coding.",
+            "title": "Branch"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Department coding.",
+            "title": "Department"
+          },
+          "suffix_1": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 1.",
+            "title": "Suffix 1"
+          },
+          "suffix_2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 2.",
+            "title": "Suffix 2"
+          },
+          "suffix_3": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 3.",
+            "title": "Suffix 3"
+          },
+          "suffix_4": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Coding suffix 4.",
+            "title": "Suffix 4"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount for this coding line.",
+            "title": "Net Amount"
+          },
+          "tax_rate": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax rate.",
+            "title": "Tax Rate"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount for this coding line.",
+            "title": "Tax Amount"
+          },
+          "total_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Gross amount for this coding line.",
+            "title": "Total Amount"
+          },
+          "tax_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax category code (e.g. 'S').",
+            "title": "Tax Category"
+          },
+          "item": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice item identifier for this coding line.",
+            "title": "Item"
+          },
+          "project_code_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Project code description.",
+            "title": "Project Code Description"
+          }
+        },
+        "title": "InboundInvoiceLineCoding",
+        "type": "object"
+      },
+      "InboundInvoiceMatchedItem": {
+        "additionalProperties": false,
+        "properties": {
+          "purchase_order_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Matched purchase order number.",
+            "title": "Purchase Order Number"
+          },
+          "purchase_order_line_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Line number of the matched purchase order line.",
+            "title": "Purchase Order Line Number"
+          },
+          "matched_quantity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Matched quantity.",
+            "title": "Matched Quantity"
+          },
+          "matched_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Matched net amount.",
+            "title": "Matched Amount"
+          },
+          "matched_tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Matched tax amount.",
+            "title": "Matched Tax Amount"
+          },
+          "is_forced": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "True when a user overrode the matching tolerance.",
+            "title": "Is Forced"
+          },
+          "order_item_details": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InboundInvoiceOrderItemDetails"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Copy of the purchase order line taken when the match was made, so its `matching_status` is the line's status at that time, not now. Null when the match did not record one."
+          }
+        },
+        "title": "InboundInvoiceMatchedItem",
         "type": "object"
       },
       "InboundInvoiceNote": {
@@ -6902,6 +7456,52 @@
           }
         },
         "title": "InboundInvoiceNote",
+        "type": "object"
+      },
+      "InboundInvoiceOrderItemDetails": {
+        "additionalProperties": false,
+        "properties": {
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount of the purchase order line.",
+            "title": "Net Amount"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount of the purchase order line.",
+            "title": "Tax Amount"
+          },
+          "matching_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The purchase order line's matching status.",
+            "title": "Matching Status"
+          }
+        },
+        "title": "InboundInvoiceOrderItemDetails",
         "type": "object"
       },
       "InboundInvoicePurchaseOrder": {
@@ -6976,10 +7576,10 @@
               }
             ],
             "default": null,
-            "description": "Invoice date in ISO-8601 UTC format.",
+            "description": "Invoice date, as an ISO-8601 calendar date (YYYY-MM-DD).",
             "title": "Inv Date"
           },
-          "seller_id": {
+          "supplier_number": {
             "anyOf": [
               {
                 "type": "string"
@@ -6989,21 +7589,8 @@
               }
             ],
             "default": null,
-            "description": "Supplier identifier.",
-            "title": "Seller Id"
-          },
-          "customer_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Customer identifier.",
-            "title": "Customer Id"
+            "description": "The resolved supplier's `supplier_number`. Null until the platform resolves the supplier.",
+            "title": "Supplier Number"
           },
           "net_amount": {
             "anyOf": [
@@ -7054,8 +7641,21 @@
               }
             ],
             "default": null,
-            "description": "Amount due for payment.",
+            "description": "The amount payable. Set equal to `tax_inclusive_amount` when the invoice is created.",
             "title": "Due For Payment"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "ISO 4217 currency code of every amount, taken from the supplier (e.g. 'NZD'). Null until the supplier resolves.",
+            "title": "Currency"
           },
           "status": {
             "anyOf": [
@@ -7067,7 +7667,7 @@
               }
             ],
             "default": null,
-            "description": "Invoice status.",
+            "description": "Invoice status. One of received, pending_approval, under_query, export_review, not_exported, open, closed, declined, reconciled, pending.",
             "title": "Status"
           },
           "document_type": {
@@ -7080,7 +7680,7 @@
               }
             ],
             "default": null,
-            "description": "Document type (e.g. 'invoice').",
+            "description": "'Invoice', 'Invoice PO', 'Credit Note' or 'Credit Note PO', as classified by the platform. PO types are matched against purchase orders; the others are coded. A document the platform classified as anything else (e.g. 'Other') keeps its stored label and has no codings or matches.",
             "title": "Document Type"
           },
           "is_duplicate": {
@@ -7096,6 +7696,19 @@
             "description": "Whether the invoice is flagged as a duplicate.",
             "title": "Is Duplicate"
           },
+          "matching_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Purchase order matching progress: unmatched, partially_matched or fully_matched.",
+            "title": "Matching Status"
+          },
           "inv_amount_matched": {
             "anyOf": [
               {
@@ -7106,7 +7719,7 @@
               }
             ],
             "default": null,
-            "description": "Amount matched against PO/receipts.",
+            "description": "Amount reconciled against bank transactions by remittance matching. When it reaches `due_for_payment` the status becomes reconciled. Not purchase order matching.",
             "title": "Inv Amount Matched"
           },
           "exported_amount": {
@@ -7161,18 +7774,31 @@
             "description": "Freight amount.",
             "title": "Freight"
           },
-          "note_comments": {
+          "surcharge": {
             "anyOf": [
               {
-                "type": "boolean"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "default": false,
-            "description": "Whether the invoice has any notes.",
-            "title": "Note Comments"
+            "default": null,
+            "description": "Surcharge amount.",
+            "title": "Surcharge"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Effective payment due date (YYYY-MM-DD): the caller's date, or one calculated from the supplier's payment terms, depending on client configuration.",
+            "title": "Due Date"
           },
           "items": {
             "description": "Invoice line items.",
@@ -7205,9 +7831,261 @@
             },
             "title": "Notes",
             "type": "array"
+          },
+          "header_codings": {
+            "description": "Header coding lines. Empty for the PO document types.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceHeaderCoding"
+            },
+            "title": "Header Codings",
+            "type": "array"
+          },
+          "line_codings": {
+            "description": "Line coding lines. Empty for the PO document types.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceLineCoding"
+            },
+            "title": "Line Codings",
+            "type": "array"
+          },
+          "matching_items": {
+            "description": "Purchase order lines matched to this invoice. Empty unless `document_type` is a PO type.",
+            "items": {
+              "$ref": "#/components/schemas/InboundInvoiceMatchedItem"
+            },
+            "title": "Matching Items",
+            "type": "array"
           }
         },
         "title": "InboundInvoiceDetail",
+        "type": "object"
+      },
+      "InboundInvoiceSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Unique internal invoice identifier (UUID) for this inbound invoice.",
+            "title": "Inv Number"
+          },
+          "ref_inv_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice number as shown on the supplier's source document.",
+            "title": "Ref Inv Number"
+          },
+          "inv_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice date, as an ISO-8601 calendar date (YYYY-MM-DD).",
+            "title": "Inv Date"
+          },
+          "supplier_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolved supplier's `supplier_number`. Null until the platform resolves the supplier.",
+            "title": "Supplier Number"
+          },
+          "net_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Net amount.",
+            "title": "Net Amount"
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Tax amount.",
+            "title": "Tax Amount"
+          },
+          "tax_inclusive_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Total tax-inclusive amount.",
+            "title": "Tax Inclusive Amount"
+          },
+          "due_for_payment": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The amount payable. Set equal to `tax_inclusive_amount` when the invoice is created.",
+            "title": "Due For Payment"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "ISO 4217 currency code of every amount, taken from the supplier (e.g. 'NZD'). Null until the supplier resolves.",
+            "title": "Currency"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Invoice status. One of received, pending_approval, under_query, export_review, not_exported, open, closed, declined, reconciled, pending.",
+            "title": "Status"
+          },
+          "document_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "'Invoice', 'Invoice PO', 'Credit Note' or 'Credit Note PO', as classified by the platform. PO types are matched against purchase orders; the others are coded. A document the platform classified as anything else (e.g. 'Other') keeps its stored label and has no codings or matches.",
+            "title": "Document Type"
+          },
+          "is_duplicate": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the invoice is flagged as a duplicate.",
+            "title": "Is Duplicate"
+          },
+          "matching_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Purchase order matching progress: unmatched, partially_matched or fully_matched.",
+            "title": "Matching Status"
+          },
+          "inv_amount_matched": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount reconciled against bank transactions by remittance matching. When it reaches `due_for_payment` the status becomes reconciled. Not purchase order matching.",
+            "title": "Inv Amount Matched"
+          },
+          "exported_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Amount already exported.",
+            "title": "Exported Amount"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Creation timestamp in ISO-8601 UTC format.",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Last updated timestamp in ISO-8601 UTC format.",
+            "title": "Updated At"
+          }
+        },
+        "title": "InboundInvoiceSummary",
         "type": "object"
       },
       "AuthTokenRequest": {
@@ -7227,7 +8105,7 @@
         "properties": {
           "access_token": {
             "type": "string",
-            "description": "HS256-signed JWT. Pass as `Authorization: Bearer <access_token>` on all other endpoints."
+            "description": "HS512-signed JWT. Pass as `Authorization: Bearer <access_token>` on all other endpoints."
           },
           "token_type": {
             "type": "string",
@@ -7261,8 +8139,7 @@
             "type": "invalid_request_error",
             "code": "invalid_request",
             "message": "api_key is required.",
-            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543",
-            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543"
           }
         }
       },
@@ -7273,8 +8150,7 @@
             "type": "authentication_error",
             "code": "invalid_api_key",
             "message": "The provided api_key is invalid.",
-            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
-            "doc_url": "https://docs.acume.dev/errors#invalid_api_key"
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26"
           }
         }
       },
@@ -7286,8 +8162,7 @@
             "code": "rate_limit_exceeded",
             "message": "Too many requests. Please retry after the given interval.",
             "retry_after": 30,
-            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4",
-            "doc_url": "https://docs.acume.dev/errors#rate_limit_exceeded"
+            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4"
           }
         }
       },
@@ -7298,8 +8173,7 @@
             "type": "api_error",
             "code": "internal_error",
             "message": "An unexpected error occurred.",
-            "request_id": "req_9bf31c7ff062936a96d3c8bd1f8f2ff3",
-            "doc_url": "https://docs.acume.dev/errors#internal_error"
+            "request_id": "req_9bf31c7ff062936a96d3c8bd1f8f2ff3"
           }
         }
       },
@@ -7311,8 +8185,7 @@
             "code": "service_unavailable",
             "message": "The service is temporarily unavailable. Please retry.",
             "retry_after": 30,
-            "request_id": "req_c9f0f895fb98ab9159f51fd0297e236d",
-            "doc_url": "https://docs.acume.dev/errors#service_unavailable"
+            "request_id": "req_c9f0f895fb98ab9159f51fd0297e236d"
           }
         }
       },
@@ -7323,8 +8196,7 @@
             "type": "invalid_request_error",
             "code": "malformed_json",
             "message": "Request body is not valid JSON: Expecting value at line 1, column 10.",
-            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
-            "doc_url": "https://docs.acume.dev/errors#malformed_json"
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26"
           }
         }
       },
@@ -7335,8 +8207,7 @@
             "type": "invalid_request_error",
             "code": "invalid_request",
             "message": "limit must be 1..200",
-            "request_id": "req_d3d9446802a44259755d38e6d163e820",
-            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+            "request_id": "req_d3d9446802a44259755d38e6d163e820"
           }
         }
       },
@@ -7359,8 +8230,7 @@
                 "message": "Must be exactly 3 characters (ISO 4217 format)"
               }
             ],
-            "request_id": "req_6512bd43d9caa6e02c990b0a82652dca",
-            "doc_url": "https://docs.acume.dev/errors#validation_error"
+            "request_id": "req_6512bd43d9caa6e02c990b0a82652dca"
           }
         }
       },
@@ -7372,8 +8242,7 @@
             "code": "resource_missing",
             "message": "Unknown tax_category 'X'",
             "field": "tax_category",
-            "request_id": "req_c20ad4d76fe97759aa27a0c99bff6710",
-            "doc_url": "https://docs.acume.dev/errors#resource_missing"
+            "request_id": "req_c20ad4d76fe97759aa27a0c99bff6710"
           }
         }
       },
@@ -7385,8 +8254,7 @@
             "code": "resource_already_exists",
             "message": "Supplier 'SUP-1' already exists",
             "field": "supplier_number",
-            "request_id": "req_aab3238922bcc25a6f606eb525ffdc56",
-            "doc_url": "https://docs.acume.dev/errors#resource_already_exists"
+            "request_id": "req_aab3238922bcc25a6f606eb525ffdc56"
           }
         }
       },
@@ -7397,8 +8265,7 @@
             "type": "invalid_request_error",
             "code": "invalid_request",
             "message": "No valid fields to update",
-            "request_id": "req_1679091c5a880faf6fb5e6087eb1b2dc",
-            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+            "request_id": "req_1679091c5a880faf6fb5e6087eb1b2dc"
           }
         }
       },
@@ -7410,8 +8277,7 @@
             "code": "invalid_request",
             "message": "GL code 'GL-100' already exists",
             "field": "code",
-            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543",
-            "doc_url": "https://docs.acume.dev/errors#invalid_request"
+            "request_id": "req_8f14e45fceea167a5a36dedd4bea2543"
           }
         }
       },
@@ -7422,8 +8288,7 @@
             "type": "idempotency_error",
             "code": "idempotency_key_reused",
             "message": "This Idempotency-Key was already used with a different request payload.",
-            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26",
-            "doc_url": "https://docs.acume.dev/errors#idempotency_key_reused"
+            "request_id": "req_45c48cce2e2d7fbdea1afc51c7c6ad26"
           }
         }
       },
@@ -7434,8 +8299,8 @@
             "type": "idempotency_error",
             "code": "idempotency_in_progress",
             "message": "A request with this Idempotency-Key is still being processed.",
-            "request_id": "req_d3d9446802a44259755d38e6d163e820",
-            "doc_url": "https://docs.acume.dev/errors#idempotency_in_progress"
+            "retry_after": 5,
+            "request_id": "req_d3d9446802a44259755d38e6d163e820"
           }
         }
       },
@@ -7446,8 +8311,7 @@
             "type": "invalid_request_error",
             "code": "resource_not_found",
             "message": "Supplier 'SUP-1' not found",
-            "request_id": "req_c74d97b01eae257e44aa9d5bade97baf",
-            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+            "request_id": "req_c74d97b01eae257e44aa9d5bade97baf"
           }
         }
       },
@@ -7458,8 +8322,7 @@
             "type": "invalid_request_error",
             "code": "resource_not_found",
             "message": "Contact '123' not found",
-            "request_id": "req_70efdf2ec9b086079795c442636b55fb",
-            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+            "request_id": "req_70efdf2ec9b086079795c442636b55fb"
           }
         }
       },
@@ -7470,8 +8333,7 @@
             "type": "invalid_request_error",
             "code": "resource_not_found",
             "message": "GL code with id '456' not found",
-            "request_id": "req_6f4922f45568161a8cdf4ad2299f6d23",
-            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+            "request_id": "req_6f4922f45568161a8cdf4ad2299f6d23"
           }
         }
       },
@@ -7482,8 +8344,7 @@
             "type": "invalid_request_error",
             "code": "resource_not_found",
             "message": "GL segment with id '789' not found",
-            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4",
-            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+            "request_id": "req_1f0e3dad99908345f7439f8ffabdffc4"
           }
         }
       },
@@ -7494,20 +8355,63 @@
             "type": "invalid_request_error",
             "code": "resource_not_found",
             "message": "Inbound invoice 'INV-123' not found",
-            "request_id": "req_9d8f7a6b5c4e3d2f1a0b9c8d7e6f5a4b",
-            "doc_url": "https://docs.acume.dev/errors#resource_not_found"
+            "request_id": "req_9d8f7a6b5c4e3d2f1a0b9c8d7e6f5a4b"
           }
         }
       },
-      "InboundInvoiceInvalidState": {
-        "summary": "Inbound invoice status transition not allowed",
+      "UpstreamError": {
+        "summary": "A downstream service could not complete the request",
+        "value": {
+          "error": {
+            "type": "api_error",
+            "code": "upstream_error",
+            "message": "A downstream service could not complete the request. Please retry.",
+            "retry_after": 30,
+            "request_id": "req_5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c"
+          }
+        }
+      },
+      "UpstreamInvalidRequest": {
+        "summary": "The platform rejected the body without naming each field",
         "value": {
           "error": {
             "type": "invalid_request_error",
-            "code": "invalid_state",
-            "message": "Cannot open invoice 'INV-123' from status 'open'",
-            "request_id": "req_2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e",
-            "doc_url": "https://docs.acume.dev/errors#invalid_state"
+            "code": "invalid_request",
+            "message": "The items.0.quantity field must be a number.",
+            "request_id": "req_4f1c9e2a7b3d4e5f6a7b8c9d0e1f2a3b"
+          }
+        }
+      },
+      "AccountForbidden": {
+        "summary": "The account is inactive and cannot create inbound invoices",
+        "value": {
+          "error": {
+            "type": "permission_error",
+            "code": "forbidden",
+            "message": "This account is inactive and cannot create inbound invoices.",
+            "request_id": "req_7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d"
+          }
+        }
+      },
+      "CreatedResponseUnavailable": {
+        "summary": "The invoice was created but the response could not be returned",
+        "value": {
+          "error": {
+            "type": "api_error",
+            "code": "created_response_unavailable",
+            "message": "The invoice was created but the response could not be returned. Retry with the same Idempotency-Key, or retrieve it with GET /v1/inbound-invoices/14bd60a7-8ef9-4d9f-9401-8a0c27f36d91.",
+            "request_id": "req_1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d"
+          }
+        }
+      },
+      "UpstreamOutcomeUnknown": {
+        "summary": "The invoice may or may not have been created",
+        "value": {
+          "error": {
+            "type": "api_error",
+            "code": "upstream_outcome_unknown",
+            "message": "The outcome of this request could not be confirmed, so the record may or may not have been created. Retry with the same Idempotency-Key and body: if it was created you receive it, not a duplicate. Without a key, check whether it exists before sending it again.",
+            "request_id": "req_0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f"
           }
         }
       },
@@ -7696,6 +8600,129 @@
           "status": "0"
         }
       },
+      "CreateInboundInvoiceMinimal": {
+        "summary": "Only the required fields",
+        "value": {
+          "ref_inv_number": "INV-10023",
+          "inv_date": "2026-09-10",
+          "net_amount": "1000.00",
+          "tax_amount": "150.00",
+          "tax_inclusive_amount": "1150.00",
+          "items": [
+            {
+              "description": "Consulting services",
+              "net_amount": "1000.00"
+            }
+          ]
+        }
+      },
+      "CreateInboundInvoiceFull": {
+        "summary": "Invoice with supplier evidence, a purchase order reference and coding segments",
+        "value": {
+          "ref_inv_number": "INV-10024",
+          "inv_date": "2026-09-10",
+          "due_date": "2026-10-20",
+          "document_type": "Invoice",
+          "bank_account_number": "01-0123-4567890-00",
+          "tax_reg_no": "123-456-789",
+          "legal_registration_identifier": "9429041234567",
+          "net_amount": "1150.00",
+          "tax_amount": "172.50",
+          "tax_inclusive_amount": "1322.50",
+          "freight": "150.00",
+          "branch": "122",
+          "department": "3112",
+          "purchase_order_numbers": [
+            "PO-4471"
+          ],
+          "items": [
+            {
+              "line_number": 1,
+              "item_name": "WIDGET-A",
+              "description": "Widget, type A",
+              "quantity": "10",
+              "uom": "EA",
+              "item_net_price": "100.0000",
+              "net_amount": "1000.00",
+              "total_amount": "1150.00"
+            }
+          ]
+        }
+      },
+      "CreatedInboundInvoice": {
+        "summary": "The CreateInboundInvoiceFull request, just created",
+        "value": {
+          "object": "inbound_invoice",
+          "data": {
+            "inv_number": "14bd60a7-8ef9-4d9f-9401-8a0c27f36d91",
+            "ref_inv_number": "INV-10024",
+            "inv_date": "2026-09-10",
+            "supplier_number": "SUP-1",
+            "net_amount": 1150.0,
+            "tax_amount": 172.5,
+            "tax_inclusive_amount": 1322.5,
+            "due_for_payment": 1322.5,
+            "currency": "NZD",
+            "status": "received",
+            "document_type": "Invoice",
+            "is_duplicate": false,
+            "matching_status": "unmatched",
+            "inv_amount_matched": 0.0,
+            "exported_amount": 0.0,
+            "created_at": "2026-09-10T02:15:00Z",
+            "updated_at": "2026-09-10T02:15:00Z",
+            "freight": 150.0,
+            "surcharge": 0.0,
+            "due_date": "2026-10-20",
+            "items": [
+              {
+                "line_number": 1,
+                "item_name": "WIDGET-A",
+                "description": "Widget, type A",
+                "quantity": "10",
+                "uom": "EA",
+                "item_net_price": 100.0,
+                "net_amount": 1000.0,
+                "tax_amount": 150.0,
+                "total_amount": 1150.0,
+                "tax_rate": "15%"
+              }
+            ],
+            "approvals": [],
+            "purchase_orders": [
+              {
+                "purchase_order_number": "PO-4471",
+                "purchase_order_uuid": null
+              }
+            ],
+            "notes": [],
+            "header_codings": [
+              {
+                "line_number": 1,
+                "description": null,
+                "gl_code": "4000",
+                "gl_code_description": "Cost of sales",
+                "project_code": null,
+                "branch": "122",
+                "department": "3112",
+                "suffix_1": null,
+                "suffix_2": null,
+                "suffix_3": null,
+                "suffix_4": null,
+                "net_amount": 1150.0,
+                "tax_rate": "15%",
+                "tax_amount": 172.5,
+                "total_amount": 1322.5,
+                "tax_category": "S",
+                "allocation_percentage": 100.0,
+                "item_category_code": null
+              }
+            ],
+            "line_codings": [],
+            "matching_items": []
+          }
+        }
+      },
       "InboundInvoiceList": {
         "summary": "List of inbound invoices",
         "value": {
@@ -7704,16 +8731,17 @@
             {
               "inv_number": "14bd60a7-8ef9-4d9f-9401-8a0c27f36d91",
               "ref_inv_number": "REF-1",
-              "inv_date": "2024-01-01T00:00:00Z",
-              "seller_id": "SUP-1",
-              "customer_id": 1,
+              "inv_date": "2024-01-01",
+              "supplier_number": "SUP-1",
               "net_amount": 100.0,
               "tax_amount": 15.0,
               "tax_inclusive_amount": 115.0,
               "due_for_payment": 115.0,
+              "currency": "NZD",
               "status": "not_exported",
               "document_type": "Invoice PO",
               "is_duplicate": false,
+              "matching_status": "fully_matched",
               "inv_amount_matched": 0.0,
               "exported_amount": 0.0,
               "created_at": "2024-01-01T00:00:00Z",
@@ -7721,8 +8749,8 @@
             }
           ],
           "pagination": {
-            "has_more": false,
-            "next_cursor": null
+            "has_more": true,
+            "next_cursor": "WyIyMDI0LTAxLTAxIDAwOjAwOjAwIiwxXQ=="
           }
         }
       },
@@ -7733,22 +8761,24 @@
           "data": {
             "inv_number": "14bd60a7-8ef9-4d9f-9401-8a0c27f36d91",
             "ref_inv_number": "REF-1",
-            "inv_date": "2024-01-01T00:00:00Z",
-            "seller_id": "SUP-1",
-            "customer_id": 1,
+            "inv_date": "2024-01-01",
+            "supplier_number": "SUP-1",
             "net_amount": 100.0,
             "tax_amount": 15.0,
             "tax_inclusive_amount": 115.0,
             "due_for_payment": 115.0,
+            "currency": "NZD",
             "status": "open",
             "document_type": "Invoice",
             "is_duplicate": false,
+            "matching_status": "unmatched",
             "inv_amount_matched": 0.0,
             "exported_amount": 0.0,
-            "freight": 0.0,
-            "note_comments": true,
             "created_at": "2024-01-01T00:00:00Z",
             "updated_at": "2024-01-01T00:00:00Z",
+            "freight": 0.0,
+            "surcharge": 0.0,
+            "due_date": "2024-01-31",
             "items": [
               {
                 "line_number": 1,
@@ -7760,7 +8790,7 @@
                 "net_amount": 50.0,
                 "tax_amount": 7.5,
                 "total_amount": 57.5,
-                "vat_rate": "15%"
+                "tax_rate": "15%"
               },
               {
                 "line_number": 2,
@@ -7772,7 +8802,7 @@
                 "net_amount": 50.0,
                 "tax_amount": 7.5,
                 "total_amount": 57.5,
-                "vat_rate": "15%"
+                "tax_rate": "15%"
               }
             ],
             "approvals": [
@@ -7787,6 +8817,87 @@
               {
                 "description": "Please process by Friday.",
                 "created_at": "2024-01-01T00:00:00Z"
+              }
+            ],
+            "header_codings": [
+              {
+                "line_number": 1,
+                "description": "Freight and packaging",
+                "gl_code": "4000",
+                "gl_code_description": "Cost of sales",
+                "project_code": null,
+                "branch": "122",
+                "department": "3112",
+                "suffix_1": null,
+                "suffix_2": null,
+                "suffix_3": null,
+                "suffix_4": null,
+                "net_amount": 100.0,
+                "tax_rate": "15%",
+                "tax_amount": 15.0,
+                "total_amount": 115.0,
+                "tax_category": "S",
+                "allocation_percentage": 100.0,
+                "item_category_code": [
+                  "S",
+                  "S"
+                ]
+              }
+            ],
+            "line_codings": [],
+            "matching_items": []
+          }
+        }
+      },
+      "InboundInvoicePoDetail": {
+        "summary": "A PO document: matched against purchase order lines, not coded",
+        "value": {
+          "object": "inbound_invoice",
+          "data": {
+            "inv_number": "3f0c2a61-5b7e-4f7a-9d1e-2c8b6a4e9f10",
+            "ref_inv_number": "REF-2",
+            "inv_date": "2024-02-01",
+            "supplier_number": "SUP-1",
+            "net_amount": 100.0,
+            "tax_amount": 15.0,
+            "tax_inclusive_amount": 115.0,
+            "due_for_payment": 115.0,
+            "currency": "NZD",
+            "status": "not_exported",
+            "document_type": "Invoice PO",
+            "is_duplicate": false,
+            "matching_status": "fully_matched",
+            "inv_amount_matched": 0.0,
+            "exported_amount": 0.0,
+            "created_at": "2024-02-01T00:00:00Z",
+            "updated_at": "2024-02-01T00:00:00Z",
+            "freight": 0.0,
+            "surcharge": 0.0,
+            "due_date": "2024-02-29",
+            "items": [],
+            "approvals": [],
+            "purchase_orders": [
+              {
+                "purchase_order_number": "PO-4471",
+                "purchase_order_uuid": null
+              }
+            ],
+            "notes": [],
+            "header_codings": [],
+            "line_codings": [],
+            "matching_items": [
+              {
+                "purchase_order_number": "PO-4471",
+                "purchase_order_line_number": "1",
+                "matched_quantity": 10.0,
+                "matched_amount": 100.0,
+                "matched_tax_amount": 15.0,
+                "is_forced": false,
+                "order_item_details": {
+                  "net_amount": 100.0,
+                  "tax_amount": 15.0,
+                  "matching_status": "fully_matched"
+                }
               }
             ]
           }
